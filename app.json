@@ -1,4 +1,49 @@
 {
-  "name": "IALFM-app",
-  "slug": "IALFM-app"
+  "expo": {
+    "name": "IALFM - Islamic Association of Lewisville & Flower Mound",
+    "slug": "ialfm-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "ialfm",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2E8B57"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.ialfm.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#2E8B57"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "org.ialfm.app"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "description": "Official mobile app for the Islamic Association of Lewisville and Flower Mound (IALFM). Access prayer times, events, programs, and stay connected with our community.",
+    "keywords": [
+      "islam",
+      "mosque",
+      "masjid",
+      "prayer times",
+      "community",
+      "lewisville",
+      "flower mound",
+      "ialfm"
+    ]
+  }
 }
