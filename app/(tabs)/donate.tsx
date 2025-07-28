@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Linking, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Linking, Alert, Pressable } from 'react-native';
 import { Heart, Home, BookOpen, Users, Lightbulb, ExternalLink, CreditCard } from 'lucide-react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -11,7 +11,7 @@ interface DonationCategory {
     priority: 'high' | 'medium' | 'ongoing';
 }
 
-export default function DonateScreen() {
+const DonateScreen = () => {
     const donationCategories: DonationCategory[] = [
         {
             id: '1',
@@ -138,13 +138,13 @@ export default function DonateScreen() {
 
                         <Text style={styles.categoryDescription}>{category.description}</Text>
 
-                        <View
+                        <Pressable
                             style={styles.donateButton}
-                            onTouchEnd={() => handleDonatePress(category.title)}
+                            onPress={() => handleDonatePress(category.title)}
                         >
                             <CreditCard size={20} color="white" />
                             <Text style={styles.donateButtonText}>Donate Now</Text>
-                        </View>
+                        </Pressable>
                     </View>
                 ))}
             </View>
@@ -203,10 +203,10 @@ export default function DonateScreen() {
                 <Text style={styles.websiteText}>
                     For secure online donations and more information about supporting IALFM:
                 </Text>
-                <View style={styles.websiteButton} onTouchEnd={openDonationWebsite}>
+                <Pressable style={styles.websiteButton} onPress={openDonationWebsite}>
                     <ExternalLink size={20} color="#2E8B57" />
                     <Text style={styles.websiteButtonText}>Visit IALFM Website</Text>
-                </View>
+                </Pressable>
             </View>
 
             <View style={styles.contactSection}>
@@ -233,7 +233,9 @@ export default function DonateScreen() {
             </View>
         </ScrollView>
     );
-}
+};
+
+export default DonateScreen;
 
 const styles = StyleSheet.create({
     container: {

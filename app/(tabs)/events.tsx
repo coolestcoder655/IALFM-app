@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Linking } from 'react-native';
+import { StyleSheet, ScrollView, Linking, Pressable } from 'react-native';
 import { Calendar, MapPin, Clock, Users, ExternalLink } from 'lucide-react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -13,7 +13,7 @@ interface Event {
     type: 'religious' | 'educational' | 'community' | 'youth';
 }
 
-export default function EventsScreen() {
+const EventsScreen = () => {
     const events: Event[] = [
         {
             id: '1',
@@ -118,10 +118,10 @@ export default function EventsScreen() {
                 <Text style={styles.infoText}>
                     Events and programs are regularly updated on our website, newsletter, and community WhatsApp group.
                 </Text>
-                <View style={styles.websiteButton} onTouchEnd={openWebsite}>
+                <Pressable style={styles.websiteButton} onPress={openWebsite}>
                     <ExternalLink size={20} color="#2E8B57" />
                     <Text style={styles.websiteButtonText}>Visit Website for Latest Updates</Text>
-                </View>
+                </Pressable>
             </View>
 
             <View style={styles.eventsSection}>
@@ -187,7 +187,9 @@ export default function EventsScreen() {
             </View>
         </ScrollView>
     );
-}
+};
+
+export default EventsScreen;
 
 const styles = StyleSheet.create({
     container: {

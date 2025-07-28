@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Linking, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Linking, Alert, Pressable } from 'react-native';
 import { Users, MessageCircle, Briefcase, UserPlus, Mail, Facebook, Youtube, ExternalLink } from 'lucide-react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -18,7 +18,7 @@ interface JobPosition {
     type: 'full-time' | 'part-time' | 'volunteer';
 }
 
-export default function CommunityScreen() {
+const CommunityScreen = () => {
     const openFacebook = () => {
         Linking.openURL('https://www.facebook.com/IALFMMasjid');
     };
@@ -172,10 +172,10 @@ export default function CommunityScreen() {
                             <Text style={styles.featureTitle}>{feature.title}</Text>
                         </View>
                         <Text style={styles.featureDescription}>{feature.description}</Text>
-                        <View style={styles.featureButton} onTouchEnd={feature.action}>
+                        <Pressable style={styles.featureButton} onPress={feature.action}>
                             <ExternalLink size={16} color="#2E8B57" />
                             <Text style={styles.featureButtonText}>Learn More</Text>
-                        </View>
+                        </Pressable>
                     </View>
                 ))}
             </View>
@@ -207,10 +207,10 @@ export default function CommunityScreen() {
                     ))}
                 </View>
 
-                <View style={styles.jobsButton} onTouchEnd={openJobsPage}>
+                <Pressable style={styles.jobsButton} onPress={openJobsPage}>
                     <Briefcase size={20} color="#2E8B57" />
                     <Text style={styles.jobsButtonText}>View Open Positions</Text>
-                </View>
+                </Pressable>
             </View>
 
             <View style={styles.volunteerSection}>
@@ -288,14 +288,16 @@ export default function CommunityScreen() {
                     📱 Facebook: @IALFMMasjid{'\n'}
                     🏢 Visit us at the masjid during community hours
                 </Text>
-                <View style={styles.startButton} onTouchEnd={openStartPage}>
+                <Pressable style={styles.startButton} onPress={openStartPage}>
                     <UserPlus size={20} color="white" />
                     <Text style={styles.startButtonText}>Start Here - Connect with IALFM</Text>
-                </View>
+                </Pressable>
             </View>
         </ScrollView >
     );
-}
+};
+
+export default CommunityScreen;
 
 const styles = StyleSheet.create({
     container: {

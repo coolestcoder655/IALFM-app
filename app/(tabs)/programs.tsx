@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Linking } from 'react-native';
+import { StyleSheet, ScrollView, Linking, Pressable } from 'react-native';
 import { BookOpen, Users, GraduationCap, Heart, Star, ExternalLink } from 'lucide-react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -13,7 +13,7 @@ interface Program {
     status: 'open' | 'closed' | 'ongoing';
 }
 
-export default function ProgramsScreen() {
+const ProgramsScreen = () => {
     const programs: Program[] = [
         {
             id: '1',
@@ -162,10 +162,10 @@ export default function ProgramsScreen() {
                     <Text style={styles.registrationCardText}>
                         Students from all levels are welcome! Choose between online or onsite classes.
                     </Text>
-                    <View style={styles.registrationButton} onTouchEnd={openQuranSchoolRegistration}>
+                    <Pressable style={styles.registrationButton} onPress={openQuranSchoolRegistration}>
                         <ExternalLink size={20} color="#2E8B57" />
                         <Text style={styles.registrationButtonText}>Register for Quran School</Text>
-                    </View>
+                    </Pressable>
                 </View>
 
                 <View style={styles.registrationCard}>
@@ -173,10 +173,10 @@ export default function ProgramsScreen() {
                     <Text style={styles.registrationCardText}>
                         Registration for new academic year (2025-26) will start in late July or early August 2025.
                     </Text>
-                    <View style={styles.registrationButton} onTouchEnd={openSundaySchoolRegistration}>
+                    <Pressable style={styles.registrationButton} onPress={openSundaySchoolRegistration}>
                         <ExternalLink size={20} color="#2E8B57" />
                         <Text style={styles.registrationButtonText}>Sunday School Info</Text>
-                    </View>
+                    </Pressable>
                 </View>
             </View>
 
@@ -203,10 +203,10 @@ export default function ProgramsScreen() {
                     💬 Community WhatsApp Group{'\n'}
                     📱 Facebook Page @IALFMMasjid
                 </Text>
-                <View style={styles.websiteButton} onTouchEnd={openWebsite}>
+                <Pressable style={styles.websiteButton} onPress={openWebsite}>
                     <ExternalLink size={20} color="#2E8B57" />
                     <Text style={styles.websiteButtonText}>View Educational Programs</Text>
-                </View>
+                </Pressable>
             </View>
 
             <View style={styles.contactSection}>
@@ -222,7 +222,9 @@ export default function ProgramsScreen() {
             </View>
         </ScrollView>
     );
-}
+};
+
+export default ProgramsScreen;
 
 const styles = StyleSheet.create({
     container: {

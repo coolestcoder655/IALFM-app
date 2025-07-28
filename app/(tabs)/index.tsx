@@ -1,12 +1,22 @@
-import { StyleSheet, ScrollView, Image, Linking } from 'react-native';
-import { MapPin, Phone, Mail, ExternalLink } from 'lucide-react-native';
-
+import { StyleSheet, ScrollView, Linking, Modal, Alert } from 'react-native';
+import { MapPin, Phone, Mail, ExternalLink, X } from 'lucide-react-native';
+import { Pressable } from 'react-native';
 import { Text, View } from '@/components/Themed';
+import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
-export default function HomeScreen() {
+const HomeScreen = () => {
+  const [emailModalVisible, setEmailModalVisible] = useState(false);
+  const router = useRouter();
+
   const openWebsite = () => {
-    Linking.openURL('https://ialfm.org');
+    Linking.openURL('https://www.ialfm.org/');
   };
+
+  const viewPrayerTimes = () => {
+    router.navigate('/prayer-times');
+  }
+
 
   const openMaps = () => {
     Linking.openURL('https://maps.google.com/?q=Islamic+Association+of+Lewisville+and+Flower+Mound');
@@ -17,7 +27,17 @@ export default function HomeScreen() {
   };
 
   const emailMasjid = () => {
+    setEmailModalVisible(true);
+  };
+
+  const openGmail = () => {
+    Linking.openURL('https://mail.google.com/mail/?view=cm&to=info@ialfm.org')
+    setEmailModalVisible(false);
+  };
+
+  const openMailto = () => {
     Linking.openURL('mailto:info@ialfm.org');
+    setEmailModalVisible(false);
   };
 
   return (
@@ -38,25 +58,30 @@ export default function HomeScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
 
-        <View style={styles.quickAction} onTouchEnd={openWebsite}>
+        <Pressable style={styles.quickAction} onPress={viewPrayerTimes}>
+          <ExternalLink size={20} color="#2E8B57" />
+          <Text style={styles.quickActionText}>View Prayer Times</Text>
+        </Pressable>
+
+        <Pressable style={styles.quickAction} onPress={openWebsite}>
           <ExternalLink size={20} color="#2E8B57" />
           <Text style={styles.quickActionText}>Visit Website</Text>
-        </View>
+        </Pressable>
 
-        <View style={styles.quickAction} onTouchEnd={openMaps}>
+        <Pressable style={styles.quickAction} onPress={openMaps}>
           <MapPin size={20} color="#2E8B57" />
           <Text style={styles.quickActionText}>Get Directions</Text>
-        </View>
+        </Pressable>
 
-        <View style={styles.quickAction} onTouchEnd={callMasjid}>
+        <Pressable style={styles.quickAction} onPress={callMasjid}>
           <Phone size={20} color="#2E8B57" />
           <Text style={styles.quickActionText}>Call Masjid</Text>
-        </View>
+        </Pressable>
 
-        <View style={styles.quickAction} onTouchEnd={emailMasjid}>
+        <Pressable style={styles.quickAction} onPress={emailMasjid}>
           <Mail size={20} color="#2E8B57" />
           <Text style={styles.quickActionText}>Email Us</Text>
-        </View>
+        </Pressable>
       </View>
 
       <View style={styles.section}>
@@ -72,15 +97,84 @@ export default function HomeScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Contact Information</Text>
-        <Text style={styles.contactText}>Email: info@ialfm.org</Text>
-        <Text style={styles.contactText}>Website: ialfm.org</Text>
-        <Text style={styles.contactText}>
-          Follow us on Facebook @IALFMMasjid for updates and announcements
-        </Text>
+
+        <View style={styles.contactItem}>
+          <Mail size={18} color="#2E8B57" />
+          <View style={styles.contactTextContainer}>
+            <Text style={styles.contactLabel}>Email</Text>
+            <Text style={styles.contactValue}>info@ialfm.org</Text>
+          </View>
+        </View>
+
+        <View style={styles.contactItem}>
+          <Phone size={18} color="#2E8B57" />
+          <View style={styles.contactTextContainer}>
+            <Text style={styles.contactLabel}>Phone</Text>
+            <Text style={styles.contactValue}>(972) 723-6335</Text>
+          </View>
+        </View>
+
+        <View style={styles.contactItem}>
+          <ExternalLink size={18} color="#2E8B57" />
+          <View style={styles.contactTextContainer}>
+            <Text style={styles.contactLabel}>Website</Text>
+            <Text style={styles.contactValue}>www.ialfm.org</Text>
+          </View>
+        </View>
+
+        <View style={styles.socialMediaSection}>
+          <Text style={styles.socialMediaTitle}>Follow Us</Text>
+          <Text style={styles.socialMediaText}>
+            Stay updated with our latest announcements and events on Facebook @IALFMMasjid
+          </Text>
+        </View>
       </View>
+
+      {/* Email Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={emailModalVisible}
+        onRequestClose={() => setEmailModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Contact IALFM</Text>
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => setEmailModalVisible(false)}
+              >
+                <X size={24} color="#666" />
+              </Pressable>
+            </View>
+
+            <Text style={styles.modalSubtitle}>Choose how you'd like to email us:</Text>
+
+            <Pressable style={styles.modalOption} onPress={openGmail}>
+              <Mail size={20} color="#EA4335" />
+              <Text style={styles.modalOptionText}>Open in Gmail</Text>
+            </Pressable>
+
+            <Pressable style={styles.modalOption} onPress={openMailto}>
+              <Mail size={20} color="#2E8B57" />
+              <Text style={styles.modalOptionText}>Open in Default Email App</Text>
+            </Pressable>
+
+            <Pressable
+              style={styles.cancelButton}
+              onPress={() => setEmailModalVisible(false)}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
-}
+};
+
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -170,5 +264,119 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 8,
     lineHeight: 24,
+  },
+  contactItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 10,
+    marginBottom: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2E8B57',
+  },
+  contactTextContainer: {
+    marginLeft: 15,
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+  },
+  contactLabel: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  contactValue: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '600',
+  },
+  socialMediaSection: {
+    marginTop: 20,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#e9ecef',
+  },
+  socialMediaTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2E8B57',
+    marginBottom: 8,
+  },
+  socialMediaText: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
+    fontStyle: 'italic',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 20,
+    margin: 20,
+    minWidth: 300,
+    maxWidth: '90%',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2E8B57',
+  },
+  closeButton: {
+    padding: 5,
+  },
+  modalSubtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  modalOptionText: {
+    fontSize: 16,
+    color: '#333',
+    marginLeft: 15,
+    fontWeight: '500',
+  },
+  cancelButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: '#666',
+    fontWeight: '500',
   },
 });

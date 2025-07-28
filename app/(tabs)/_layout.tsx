@@ -7,16 +7,16 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 
 // Tab bar icon component using Lucide icons
-function TabBarIcon(props: {
+const TabBarIcon = (props: {
   Icon: React.ComponentType<any>;
   color: string;
   size?: number;
-}) {
+}) => {
   const { Icon, color, size = 24 } = props;
   return <Icon size={size} color={color} style={{ marginBottom: -3 }} />;
-}
+};
 
-export default function TabLayout() {
+const TabLayout = () => {
   const colorScheme = useColorScheme();
 
   return (
@@ -72,4 +72,6 @@ export default function TabLayout() {
       />
     </Tabs>
   );
-}
+};
+
+export default TabLayout;

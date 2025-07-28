@@ -1,34 +1,71 @@
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
-import { Clock, Sunrise, Sun, Sunset, Moon } from 'lucide-react-native';
-
+import { Clock, MapPin } from 'lucide-react-native';
+import { getPrayerTimes } from '@/apis/getPrayerTimes';
+import { getLocation } from '@/apis/getLocation';
 import { Text, View } from '@/components/Themed';
+import { usePrayerTimes } from '@/context/prayerTimesContext';
+import { useLocation } from '@/context/locationContext';
 
-interface PrayerTime {
-    name: string;
-    time: string;
-    icon: React.ComponentType<any>;
-}
 
-export default function PrayerTimesScreen() {
-    const [currentTime, setCurrentTime] = useState(new Date());
+const PrayerTimesScreen = () => {
+    const currentTime = new Date();
+    const { prayerTimes, setPrayerTimes } = usePrayerTimes();
+    const { coordinates, setCoordinates } = useLocation();
+    const [currentPrayer, setCurrentPrayer] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Fetch location on component mount
+    useEffect(() => {
+        const fetchLocation = async () => {
+            try {
+                const location = await getLocation();
+                if (location) {
+                    setCoordinates(location);
+                } else {
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                console.error('Error fetching location:', error);
+                setIsLoading(false);
+            }
+        };
+
+        if (!coordinates) {
+            fetchLocation();
+        }
+    }, [coordinates, setCoordinates]);
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 1000);
+        const interval = setInterval(() => {
+            prayerTimes.forEach(prayer => {
+                if (prayer.time === currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })) {
+                    setCurrentPrayer(prayer.name);
+                }
+            });
+        }, 60 * 1000);
+        return () => clearInterval(interval);
+    }, []); // Empty dependency array means this runs once on mount
 
-        return () => clearInterval(timer);
-    }, []);
-
-    // Sample prayer times (in a real app, these would be calculated based on location)
-    const prayerTimes: PrayerTime[] = [
-        { name: 'Fajr', time: '5:45 AM', icon: Sunrise },
-        { name: 'Dhuhr', time: '12:35 PM', icon: Sun },
-        { name: 'Asr', time: '4:20 PM', icon: Sun },
-        { name: 'Maghrib', time: '7:15 PM', icon: Sunset },
-        { name: 'Isha', time: '8:45 PM', icon: Moon },
-    ];
+    useEffect(() => {
+        let isMounted = true;
+        if (coordinates) {
+            setIsLoading(true);
+            getPrayerTimes(coordinates).then((data) => {
+                if (isMounted && data) {
+                    setPrayerTimes(data);
+                    setIsLoading(false);
+                }
+            }).catch(() => {
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            });
+        }
+        return () => {
+            isMounted = false;
+        };
+    }, [coordinates]);
 
     const getCurrentPrayerStatus = () => {
         const currentHour = currentTime.getHours();
@@ -70,6 +107,26 @@ export default function PrayerTimesScreen() {
 
     const nextPrayer = getCurrentPrayerStatus();
 
+    // Show loading screen while fetching location or prayer times
+    if (!coordinates || isLoading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <View style={styles.loadingContent}>
+                    <View style={styles.logoContainer}>
+                        <MapPin size={48} color="#2E8B57" />
+                    </View>
+                    <ActivityIndicator size="large" color="#2E8B57" style={styles.spinner} />
+                    <Text style={styles.loadingText}>
+                        {!coordinates ? 'Getting your location...' : 'Loading prayer times...'}
+                    </Text>
+                    <Text style={styles.loadingSubtext}>
+                        Please ensure location permissions are enabled
+                    </Text>
+                </View>
+            </View>
+        );
+    }
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
@@ -99,8 +156,8 @@ export default function PrayerTimesScreen() {
 
             <View style={styles.prayerTimesSection}>
                 <Text style={styles.sectionTitle}>Today's Prayer Times</Text>
-                {prayerTimes.map((prayer, index) => (
-                    <View key={prayer.name} style={styles.prayerTimeRow}>
+                {prayerTimes.map((prayer, _) => (
+                    <View key={prayer.name} style={currentPrayer === prayer.name ? styles.currentPrayerTimeRow : styles.prayerTimeRow}>
                         <View style={styles.prayerInfo}>
                             <prayer.icon size={24} color="#2E8B57" />
                             <Text style={styles.prayerName}>{prayer.name}</Text>
@@ -129,12 +186,57 @@ export default function PrayerTimesScreen() {
             </View>
         </ScrollView>
     );
-}
+};
+
+export default PrayerTimesScreen;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f8f9fa',
+    },
+    loadingContainer: {
+        flex: 1,
+        backgroundColor: '#f8f9fa',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 40,
+    },
+    loadingContent: {
+        alignItems: 'center',
+        backgroundColor: 'white',
+        padding: 40,
+        borderRadius: 20,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        minWidth: 280,
+    },
+    logoContainer: {
+        backgroundColor: '#e8f5e8',
+        borderRadius: 50,
+        padding: 20,
+        marginBottom: 20,
+        borderWidth: 2,
+        borderColor: '#2E8B57',
+    },
+    spinner: {
+        marginBottom: 20,
+    },
+    loadingText: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#2E8B57',
+        textAlign: 'center',
+        marginBottom: 8,
+    },
+    loadingSubtext: {
+        fontSize: 14,
+        color: '#666',
+        textAlign: 'center',
+        lineHeight: 20,
     },
     header: {
         backgroundColor: '#2E8B57',
@@ -225,6 +327,15 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         borderBottomWidth: 1,
         borderBottomColor: '#f0f0f0',
+    },
+    currentPrayerTimeRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#2E8B57',
+        backgroundColor: '#e8f5e8',
     },
     prayerInfo: {
         flexDirection: 'row',
