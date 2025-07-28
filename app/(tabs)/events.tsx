@@ -258,6 +258,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#2E8B57',
         marginBottom: 15,
+        paddingLeft: 10,
+        paddingTop: 10,
     },
     eventCard: {
         backgroundColor: 'white',

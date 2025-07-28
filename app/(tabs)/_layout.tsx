@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Home, Clock, Calendar, BookOpen, Heart, Users } from 'lucide-react-native';
+import { Home, Clock, Calendar, BookOpen, Heart, Users, BookText } from 'lucide-react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -40,6 +40,13 @@ const TabLayout = () => {
         options={{
           title: 'Prayer Times',
           tabBarIcon: ({ color }) => <TabBarIcon Icon={Clock} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="daily-dua"
+        options={{
+          title: 'Daily Dua',
+          tabBarIcon: ({ color }) => <TabBarIcon Icon={BookText} color={color} />,
         }}
       />
       <Tabs.Screen

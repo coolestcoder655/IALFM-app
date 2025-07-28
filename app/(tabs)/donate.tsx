@@ -83,7 +83,7 @@ const DonateScreen = () => {
     const handleDonatePress = (category: string) => {
         Alert.alert(
             'Donate to IALFM',
-            `Thank you for your interest in supporting ${category}. Please visit our website or contact the masjid for donation information.`,
+            `Thank you for your interest in supporting ${category}. Please visit our website for donations.`,
             [
                 { text: 'Visit Website', onPress: openDonationWebsite },
                 { text: 'Cancel', style: 'cancel' },
