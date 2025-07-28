@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { StyleSheet, ScrollView, ActivityIndicator, Button } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Clock, MapPin } from 'lucide-react-native';
 import { getPrayerTimes } from '@/apis/getPrayerTimes';
@@ -7,13 +7,19 @@ import { Text, View } from '@/components/Themed';
 import { usePrayerTimes } from '@/context/prayerTimesContext';
 import { useLocation } from '@/context/locationContext';
 
-
 const PrayerTimesScreen = () => {
     const currentTime = new Date();
     const { prayerTimes, setPrayerTimes } = usePrayerTimes();
     const { coordinates, setCoordinates } = useLocation();
     const [currentPrayer, setCurrentPrayer] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isFriday, setIsFriday] = useState(false);
+
+    useEffect(() => {
+        // Check if today is Friday
+        const today = new Date();
+        setIsFriday(today.getDay() === 5); // 5 is Friday in JavaScript Date
+    }, [])
 
     // Fetch location on component mount
     useEffect(() => {
@@ -37,15 +43,94 @@ const PrayerTimesScreen = () => {
     }, [coordinates, setCoordinates]);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            prayerTimes.forEach(prayer => {
-                if (prayer.time === currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })) {
-                    setCurrentPrayer(prayer.name);
+        const checkCurrentPrayer = () => {
+            if (!prayerTimes || prayerTimes.length === 0) return;
+
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const currentTimeInMinutes = currentHour * 60 + currentMinute;
+
+            let activePrayer = null;
+
+            // Convert prayer times to minutes for comparison
+            const prayerTimesWithMinutes = prayerTimes.map(prayer => {
+                const [time, period] = prayer.time.split(' ');
+                const [hours, minutes] = time.split(':').map(Number);
+                let hour24 = hours;
+
+                if (period === 'PM' && hours !== 12) {
+                    hour24 += 12;
+                } else if (period === 'AM' && hours === 12) {
+                    hour24 = 0;
                 }
+
+                return {
+                    name: prayer.name,
+                    timeInMinutes: hour24 * 60 + minutes,
+                    originalTime: prayer.time
+                };
             });
-        }, 60 * 1000);
+
+            // Sort by time to ensure proper order
+            prayerTimesWithMinutes.sort((a, b) => a.timeInMinutes - b.timeInMinutes);
+
+            // Much more generous current prayer detection
+            for (let i = 0; i < prayerTimesWithMinutes.length; i++) {
+                const prayer = prayerTimesWithMinutes[i];
+
+                // Very wide window: 30 minutes before to 90 minutes after prayer time
+                const windowStart = prayer.timeInMinutes - 30;
+                const windowEnd = prayer.timeInMinutes + 90;
+
+                // If we're in this prayer's window
+                if (currentTimeInMinutes >= windowStart && currentTimeInMinutes <= windowEnd) {
+                    activePrayer = prayer.name;
+                    console.log(`Found active prayer: ${prayer.name} (current: ${currentTimeInMinutes}, window: ${windowStart}-${windowEnd})`);
+                    break;
+                }
+            }
+
+            // If no prayer found with the wide window, try a simpler approach
+            if (!activePrayer) {
+                // Find the most recent prayer that has passed
+                for (let i = prayerTimesWithMinutes.length - 1; i >= 0; i--) {
+                    const prayer = prayerTimesWithMinutes[i];
+
+                    // If current time is within 2 hours after this prayer
+                    if (currentTimeInMinutes >= prayer.timeInMinutes &&
+                        currentTimeInMinutes <= prayer.timeInMinutes + 120) {
+                        activePrayer = prayer.name;
+                        console.log(`Found recent prayer: ${prayer.name} (within 2 hours)`);
+                        break;
+                    }
+                }
+            }
+
+            console.log('Current prayer check:', {
+                currentTime: `${currentHour}:${String(currentMinute).padStart(2, '0')}`,
+                currentTimeInMinutes,
+                activePrayer,
+                prayerTimes: prayerTimesWithMinutes.map(p => ({
+                    name: p.name,
+                    time: p.originalTime,
+                    minutes: p.timeInMinutes,
+                    wideWindowStart: p.timeInMinutes - 30,
+                    wideWindowEnd: p.timeInMinutes + 90,
+                    isInWideWindow: currentTimeInMinutes >= p.timeInMinutes - 30 && currentTimeInMinutes <= p.timeInMinutes + 90
+                }))
+            });
+
+            setCurrentPrayer(activePrayer);
+        };
+
+        // Check immediately
+        checkCurrentPrayer();
+
+        // Then check every 30 seconds for more responsive updates
+        const interval = setInterval(checkCurrentPrayer, 30 * 1000);
         return () => clearInterval(interval);
-    }, []); // Empty dependency array means this runs once on mount
+    }, [prayerTimes]); // Depend on prayerTimes so it updates when prayer times change
 
     useEffect(() => {
         let isMounted = true;
@@ -68,19 +153,30 @@ const PrayerTimesScreen = () => {
     }, [coordinates]);
 
     const getCurrentPrayerStatus = () => {
+        if (!prayerTimes || prayerTimes.length === 0) {
+            return { next: 'Loading...', timeLeft: 0 };
+        }
+
         const currentHour = currentTime.getHours();
         const currentMinute = currentTime.getMinutes();
         const currentTimeInMinutes = currentHour * 60 + currentMinute;
 
         // Convert prayer times to minutes for comparison
-        const prayerTimesInMinutes = [
-            5 * 60 + 45,  // Fajr
-            12 * 60 + 35, // Dhuhr
-            16 * 60 + 20, // Asr
-            19 * 60 + 15, // Maghrib
-            20 * 60 + 45, // Isha
-        ];
+        const prayerTimesInMinutes = prayerTimes.map(prayer => {
+            const [time, period] = prayer.time.split(' ');
+            const [hours, minutes] = time.split(':').map(Number);
+            let hour24 = hours;
 
+            if (period === 'PM' && hours !== 12) {
+                hour24 += 12;
+            } else if (period === 'AM' && hours === 12) {
+                hour24 = 0;
+            }
+
+            return hour24 * 60 + minutes;
+        });
+
+        // Find the next prayer today
         for (let i = 0; i < prayerTimesInMinutes.length; i++) {
             if (currentTimeInMinutes < prayerTimesInMinutes[i]) {
                 return {
@@ -92,10 +188,10 @@ const PrayerTimesScreen = () => {
 
         // If past all prayers, next is Fajr tomorrow
         const minutesUntilMidnight = 24 * 60 - currentTimeInMinutes;
-        const minutesFromMidnightToFajr = 5 * 60 + 45;
+        const fajrTomorrowMinutes = prayerTimesInMinutes[0]; // Fajr is the first prayer
         return {
-            next: 'Fajr',
-            timeLeft: minutesUntilMidnight + minutesFromMidnightToFajr,
+            next: prayerTimes[0].name, // Fajr
+            timeLeft: minutesUntilMidnight + fajrTomorrowMinutes,
         };
     };
 
@@ -146,6 +242,15 @@ const PrayerTimesScreen = () => {
                 </Text>
             </View>
 
+            {isFriday && (<View style={styles.fridaySection}>
+                <Text style={styles.fridayTitle}>Friday (Jummah) Prayer</Text>
+                <Text style={styles.fridayTime}>1:30 PM</Text>
+                <Text style={styles.fridayNote}>
+                    Khutbah starts at 1:30 PM{'\n'}
+                    Please arrive early for better seating
+                </Text>
+            </View>)}
+
             <View style={styles.nextPrayerSection}>
                 <Text style={styles.nextPrayerLabel}>Next Prayer</Text>
                 <Text style={styles.nextPrayerName}>{nextPrayer.next}</Text>
@@ -156,24 +261,48 @@ const PrayerTimesScreen = () => {
 
             <View style={styles.prayerTimesSection}>
                 <Text style={styles.sectionTitle}>Today's Prayer Times</Text>
-                {prayerTimes.map((prayer, _) => (
-                    <View key={prayer.name} style={currentPrayer === prayer.name ? styles.currentPrayerTimeRow : styles.prayerTimeRow}>
-                        <View style={styles.prayerInfo}>
-                            <prayer.icon size={24} color="#2E8B57" />
-                            <Text style={styles.prayerName}>{prayer.name}</Text>
-                        </View>
-                        <Text style={styles.prayerTime}>{prayer.time}</Text>
-                    </View>
-                ))}
-            </View>
+                {prayerTimes.map((prayer, _) => {
+                    const isCurrentPrayer = currentPrayer === prayer.name;
+                    const isNextPrayer = nextPrayer.next === prayer.name;
 
-            <View style={styles.fridaySection}>
-                <Text style={styles.fridayTitle}>Friday (Jummah) Prayer</Text>
-                <Text style={styles.fridayTime}>1:30 PM</Text>
-                <Text style={styles.fridayNote}>
-                    Khutbah starts at 1:30 PM{'\n'}
-                    Please arrive early for better seating
-                </Text>
+                    if (isCurrentPrayer) {
+                        return (
+                            <View key={prayer.name} style={styles.currentPrayerTimeRow}>
+                                <View style={styles.currentPrayerInfo}>
+                                    <prayer.icon size={28} color="#ffffff" />
+                                    <Text style={styles.currentPrayerName}>
+                                        {prayer.name}
+                                        <Text style={styles.currentLabel}> • NOW</Text>
+                                    </Text>
+                                </View>
+                                <Text style={styles.currentPrayerTimeText}>{prayer.time}</Text>
+                            </View>
+                        );
+                    } else if (isNextPrayer) {
+                        return (
+                            <View key={prayer.name} style={styles.nextPrayerTimeRow}>
+                                <View style={styles.nextPrayerInfo}>
+                                    <prayer.icon size={26} color="#1565C0" />
+                                    <Text style={styles.nextPrayerNameText}>
+                                        {prayer.name}
+                                        <Text style={styles.nextLabel}> • NEXT</Text>
+                                    </Text>
+                                </View>
+                                <Text style={styles.nextPrayerTimeText}>{prayer.time}</Text>
+                            </View>
+                        );
+                    } else {
+                        return (
+                            <View key={prayer.name} style={styles.prayerTimeRow}>
+                                <View style={styles.prayerInfo}>
+                                    <prayer.icon size={24} color="#2E8B57" />
+                                    <Text style={styles.prayerName}>{prayer.name}</Text>
+                                </View>
+                                <Text style={styles.prayerTime}>{prayer.time}</Text>
+                            </View>
+                        );
+                    }
+                })}
             </View>
 
             <View style={styles.noticeSection}>
@@ -332,14 +461,47 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: '#2E8B57',
-        backgroundColor: '#e8f5e8',
+        paddingVertical: 16,
+        paddingHorizontal: 15,
+        backgroundColor: '#2E8B57',
+        borderRadius: 20,
+        marginVertical: 6,
+        marginHorizontal: 4,
+        elevation: 6,
+        shadowColor: '#2E8B57',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 8,
+        borderWidth: 3,
+        borderColor: '#1e5a3a',
+    },
+    nextPrayerTimeRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 14,
+        paddingHorizontal: 12,
+        backgroundColor: '#E3F2FD',
+        borderRadius: 20,
+        marginVertical: 4,
+        marginHorizontal: 2,
+        borderWidth: 2,
+        borderColor: '#1565C0',
+        elevation: 2,
     },
     prayerInfo: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    currentPrayerInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+    },
+    nextPrayerInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
     },
     prayerName: {
         fontSize: 18,
@@ -347,9 +509,51 @@ const styles = StyleSheet.create({
         marginLeft: 12,
         fontWeight: '500',
     },
+    currentPrayerName: {
+        fontSize: 20,
+        color: '#ffffff',
+        marginLeft: 12,
+        fontWeight: 'bold',
+    },
+    nextPrayerNameText: {
+        fontSize: 19,
+        color: '#1565C0',
+        marginLeft: 12,
+        fontWeight: '600',
+    },
+    currentLabel: {
+        fontSize: 12,
+        color: '#ffffff',
+        fontWeight: 'bold',
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 10,
+        overflow: 'hidden',
+    },
+    nextLabel: {
+        fontSize: 11,
+        color: '#1565C0',
+        fontWeight: 'bold',
+        backgroundColor: 'rgba(21, 101, 192, 0.1)',
+        paddingHorizontal: 5,
+        paddingVertical: 1,
+        borderRadius: 8,
+        overflow: 'hidden',
+    },
     prayerTime: {
         fontSize: 18,
         color: '#2E8B57',
+        fontWeight: 'bold',
+    },
+    currentPrayerTimeText: {
+        fontSize: 20,
+        color: '#ffffff',
+        fontWeight: 'bold',
+    },
+    nextPrayerTimeText: {
+        fontSize: 19,
+        color: '#1565C0',
         fontWeight: 'bold',
     },
     fridaySection: {
@@ -402,5 +606,25 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#666',
         lineHeight: 20,
+    },
+    debugSection: {
+        backgroundColor: '#fff3cd',
+        margin: 15,
+        marginTop: 0,
+        padding: 15,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#ffc107',
+    },
+    debugTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#856404',
+        marginBottom: 8,
+    },
+    debugText: {
+        fontSize: 14,
+        color: '#856404',
+        marginBottom: 4,
     },
 });

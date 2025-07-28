@@ -1,2 +1,3 @@
-- [ ] Make buttons interactable
-- [ ] Setup up `RESTful API`
+- [x] Make buttons interactable
+- [ ] Supabase Integration
+- [ ] Make Jummah Alert Appear Before Jummah On Friday
