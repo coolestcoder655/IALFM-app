@@ -15,8 +15,7 @@ const HomeScreen = () => {
 
   const viewPrayerTimes = () => {
     router.navigate('/prayer-times');
-  }
-
+  };
 
   const openMaps = () => {
     Linking.openURL('https://maps.google.com/?q=Islamic+Association+of+Lewisville+and+Flower+Mound');
