@@ -50,7 +50,7 @@ const HomeScreen = () => {
       <View style={styles.welcomeSection}>
         <Text style={styles.welcomeTitle}>Welcome to IALFM</Text>
         <Text style={styles.welcomeText}>
-          Alhumdulillah, after the successful completion of construction of our New IALFM Masjid building in 2021,
+          Alhumdulillah, after the successful completion of construction of our new IALFM Masjid building in 2021,
           we have been using it regularly for Friday prayers and community activities.
         </Text>
       </View>
@@ -84,15 +84,38 @@ const HomeScreen = () => {
         </Pressable>
       </View>
 
-      <View style={styles.section}>
+      <View style={styles.servicesCard}>
         <Text style={styles.sectionTitle}>Services & Facilities</Text>
-        <Text style={styles.serviceItem}>• Daily Five Prayers</Text>
-        <Text style={styles.serviceItem}>• Friday Jummah Prayers</Text>
-        <Text style={styles.serviceItem}>• Quran School</Text>
-        <Text style={styles.serviceItem}>• Sunday School</Text>
-        <Text style={styles.serviceItem}>• Youth Programs</Text>
-        <Text style={styles.serviceItem}>• Educational Programs</Text>
-        <Text style={styles.serviceItem}>• Community Events</Text>
+        <View style={styles.servicesList}>
+          <View style={styles.serviceRow}>
+            <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
+            <Text style={styles.serviceItemText}>Daily Five Prayers</Text>
+          </View>
+          <View style={styles.serviceRow}>
+            <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
+            <Text style={styles.serviceItemText}>Friday Jummah Prayers</Text>
+          </View>
+          <View style={styles.serviceRow}>
+            <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
+            <Text style={styles.serviceItemText}>Quran School</Text>
+          </View>
+          <View style={styles.serviceRow}>
+            <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
+            <Text style={styles.serviceItemText}>Sunday School</Text>
+          </View>
+          <View style={styles.serviceRow}>
+            <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
+            <Text style={styles.serviceItemText}>Youth Programs</Text>
+          </View>
+          <View style={styles.serviceRow}>
+            <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
+            <Text style={styles.serviceItemText}>Educational Programs</Text>
+          </View>
+          <View style={styles.serviceRow}>
+            <Mail size={20} color="#2E8B57" style={styles.serviceIcon} />
+            <Text style={styles.serviceItemText}>Community Events</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -273,8 +296,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
     borderRadius: 10,
     marginBottom: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#2E8B57',
   },
   contactTextContainer: {
     marginLeft: 15,
@@ -378,5 +399,39 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     fontWeight: '500',
+  },
+  servicesCard: {
+    backgroundColor: '#f0f8f0',
+    margin: 15,
+    marginTop: 0,
+    borderRadius: 14,
+    padding: 22,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.10,
+    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: '#e0ece0',
+  },
+  servicesList: {
+    marginTop: 8,
+  },
+  serviceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    backgroundColor: '#f0f8f0',
+    borderTopColor: '#e0e0e0',
+    borderTopWidth: 1,
+  },
+  serviceIcon: {
+    marginRight: 14,
+  },
+  serviceItemText: {
+    fontSize: 16,
+    color: '#2E8B57',
+    fontWeight: '500',
+    letterSpacing: 0.1,
   },
 });
