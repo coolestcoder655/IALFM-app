@@ -8,7 +8,7 @@ import { usePrayerTimes } from '@/context/prayerTimesContext';
 import { useLocation } from '@/context/locationContext';
 
 const PrayerTimesScreen = () => {
-    const currentTime = new Date();
+    const [currentTime, setCurrentTime] = useState(new Date());
     const { prayerTimes, setPrayerTimes } = usePrayerTimes();
     const { coordinates, setCoordinates } = useLocation();
     const [currentPrayer, setCurrentPrayer] = useState<string | null>(null);
@@ -76,6 +76,15 @@ const PrayerTimesScreen = () => {
             ]).start();
         }, 60000); // Every minute
         return () => clearInterval(interval);
+    }, []);
+
+    // Update current time every second
+    useEffect(() => {
+        const timeInterval = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000); // Update every second
+
+        return () => clearInterval(timeInterval);
     }, []);
 
     useEffect(() => {
