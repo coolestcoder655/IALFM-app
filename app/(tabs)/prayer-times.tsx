@@ -1,5 +1,5 @@
-import { StyleSheet, ScrollView, ActivityIndicator, Button } from 'react-native';
-import { useState, useEffect } from 'react';
+import { StyleSheet, ScrollView, ActivityIndicator, Button, Animated, Easing } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
 import { Clock, MapPin } from 'lucide-react-native';
 import { getPrayerTimes } from '@/apis/getPrayerTimes';
 import { getLocation } from '@/apis/getLocation';
@@ -14,6 +14,69 @@ const PrayerTimesScreen = () => {
     const [currentPrayer, setCurrentPrayer] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isFriday, setIsFriday] = useState(false);
+
+    // Animation values
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const slideAnim = useRef(new Animated.Value(50)).current;
+    const currentPrayerScale = useRef(new Animated.Value(1)).current;
+    const timeUpdateAnim = useRef(new Animated.Value(1)).current;
+
+    // Animate entry on component mount
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 800,
+                easing: Easing.out(Easing.cubic),
+                useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 600,
+                easing: Easing.out(Easing.back(1.2)),
+                useNativeDriver: true,
+            }),
+        ]).start();
+    }, []);
+
+    // Animate prayer transitions
+    const animatePrayerTransition = () => {
+        Animated.sequence([
+            Animated.timing(currentPrayerScale, {
+                toValue: 1.1,
+                duration: 300,
+                easing: Easing.elastic(1.2),
+                useNativeDriver: true,
+            }),
+            Animated.timing(currentPrayerScale, {
+                toValue: 1,
+                duration: 400,
+                easing: Easing.out(Easing.cubic),
+                useNativeDriver: true,
+            }),
+        ]).start();
+    };
+
+
+
+    // Time update animation
+    useEffect(() => {
+        const interval = setInterval(() => {
+            Animated.sequence([
+                Animated.timing(timeUpdateAnim, {
+                    toValue: 1.05,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(timeUpdateAnim, {
+                    toValue: 1,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+            ]).start();
+        }, 60000); // Every minute
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         // Check if today is Friday
@@ -86,7 +149,6 @@ const PrayerTimesScreen = () => {
                 // If we're in this prayer's window
                 if (currentTimeInMinutes >= windowStart && currentTimeInMinutes <= windowEnd) {
                     activePrayer = prayer.name;
-                    console.log(`Found active prayer: ${prayer.name} (current: ${currentTimeInMinutes}, window: ${windowStart}-${windowEnd})`);
                     break;
                 }
             }
@@ -101,27 +163,17 @@ const PrayerTimesScreen = () => {
                     if (currentTimeInMinutes >= prayer.timeInMinutes &&
                         currentTimeInMinutes <= prayer.timeInMinutes + 120) {
                         activePrayer = prayer.name;
-                        console.log(`Found recent prayer: ${prayer.name} (within 2 hours)`);
                         break;
                     }
                 }
             }
 
-            console.log('Current prayer check:', {
-                currentTime: `${currentHour}:${String(currentMinute).padStart(2, '0')}`,
-                currentTimeInMinutes,
-                activePrayer,
-                prayerTimes: prayerTimesWithMinutes.map(p => ({
-                    name: p.name,
-                    time: p.originalTime,
-                    minutes: p.timeInMinutes,
-                    wideWindowStart: p.timeInMinutes - 30,
-                    wideWindowEnd: p.timeInMinutes + 90,
-                    isInWideWindow: currentTimeInMinutes >= p.timeInMinutes - 30 && currentTimeInMinutes <= p.timeInMinutes + 90
-                }))
-            });
-
             setCurrentPrayer(activePrayer);
+
+            // Trigger animation when current prayer changes
+            if (activePrayer && activePrayer !== currentPrayer) {
+                animatePrayerTransition();
+            }
         };
 
         // Check immediately
@@ -224,14 +276,21 @@ const PrayerTimesScreen = () => {
     }
 
     return (
-        <ScrollView style={styles.container}>
+        <Animated.ScrollView
+            style={[styles.container, {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }]
+            }]}
+        >
             <View style={styles.header}>
                 <Clock size={32} color="white" />
                 <Text style={styles.headerTitle}>Prayer Times</Text>
                 <Text style={styles.headerSubtitle}>Lewisville & Flower Mound</Text>
             </View>
 
-            <View style={styles.currentTimeSection}>
+            <Animated.View style={[styles.currentTimeSection, {
+                transform: [{ scale: timeUpdateAnim }]
+            }]}>
                 <Text style={styles.currentTimeLabel}>Current Time</Text>
                 <Text style={styles.currentTime}>
                     {currentTime.toLocaleTimeString('en-US', {
@@ -240,16 +299,29 @@ const PrayerTimesScreen = () => {
                         second: '2-digit',
                     })}
                 </Text>
-            </View>
+            </Animated.View>
 
-            {isFriday && (<View style={styles.fridaySection}>
-                <Text style={styles.fridayTitle}>Friday (Jummah) Prayer</Text>
-                <Text style={styles.fridayTime}>1:30 PM</Text>
-                <Text style={styles.fridayNote}>
-                    Khutbah starts at 1:30 PM{'\n'}
-                    Please arrive early for better seating
-                </Text>
-            </View>)}
+            {isFriday && (
+                <Animated.View style={[styles.fridaySection, {
+                    opacity: fadeAnim,
+                    transform: [
+                        { scale: fadeAnim },
+                        {
+                            rotateX: fadeAnim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: ['90deg', '0deg']
+                            })
+                        }
+                    ]
+                }]}>
+                    <Text style={styles.fridayTitle}>Friday (Jummah) Prayer</Text>
+                    <Text style={styles.fridayTime}>1:30 PM</Text>
+                    <Text style={styles.fridayNote}>
+                        Khutbah starts at 1:30 PM{'\n'}
+                        Please arrive early for better seating
+                    </Text>
+                </Animated.View>
+            )}
 
             <View style={styles.nextPrayerSection}>
                 <Text style={styles.nextPrayerLabel}>Next Prayer</Text>
@@ -261,45 +333,76 @@ const PrayerTimesScreen = () => {
 
             <View style={styles.prayerTimesSection}>
                 <Text style={styles.sectionTitle}>Today's Prayer Times</Text>
-                {prayerTimes.map((prayer, _) => {
+                {prayerTimes.map((prayer, index) => {
                     const isCurrentPrayer = currentPrayer === prayer.name;
                     const isNextPrayer = nextPrayer.next === prayer.name;
 
                     if (isCurrentPrayer) {
                         return (
-                            <View key={prayer.name} style={styles.currentPrayerTimeRow}>
-                                <View style={styles.currentPrayerInfo}>
+                            <View
+                                key={prayer.name}
+                                style={styles.currentPrayerTimeRow}
+                            >
+                                <View style={isCurrentPrayer ? [styles.currentPrayerInfo, { backgroundColor: '#2E8B57' }] : styles.currentPrayerInfo}>
                                     <prayer.icon size={28} color="#ffffff" />
-                                    <Text style={styles.currentPrayerName}>
-                                        {prayer.name}
-                                        <Text style={styles.currentLabel}> • NOW</Text>
-                                    </Text>
+                                    <View style={isCurrentPrayer ? [styles.prayerNameWithBadge, { backgroundColor: '#2E8B57' }] : styles.prayerNameWithBadge}>
+                                        <Text style={styles.currentPrayerName}>{prayer.name}</Text>
+                                        <View style={styles.currentBadge}>
+                                            <Text style={styles.currentLabel}>NOW</Text>
+                                        </View>
+                                    </View>
                                 </View>
                                 <Text style={styles.currentPrayerTimeText}>{prayer.time}</Text>
                             </View>
                         );
                     } else if (isNextPrayer) {
                         return (
-                            <View key={prayer.name} style={styles.nextPrayerTimeRow}>
-                                <View style={styles.nextPrayerInfo}>
+                            <Animated.View
+                                key={prayer.name}
+                                style={[styles.nextPrayerTimeRow, {
+                                    opacity: fadeAnim,
+                                    transform: [
+                                        {
+                                            translateY: fadeAnim.interpolate({
+                                                inputRange: [0, 1],
+                                                outputRange: [20, 0]
+                                            })
+                                        }
+                                    ]
+                                }]}
+                            >
+                                <View style={isNextPrayer ? [styles.nextPrayerInfo, { backgroundColor: '#E3F2FD' }] : styles.nextPrayerInfo}>
                                     <prayer.icon size={26} color="#1565C0" />
-                                    <Text style={styles.nextPrayerNameText}>
-                                        {prayer.name}
-                                        <Text style={styles.nextLabel}> • NEXT</Text>
-                                    </Text>
+                                    <View style={isNextPrayer ? [styles.prayerNameWithBadge, { backgroundColor: '#E3F2FD' }] : styles.prayerNameWithBadge}>
+                                        <Text style={styles.nextPrayerNameText}>{prayer.name}</Text>
+                                        <View style={styles.nextBadge}>
+                                            <Text style={styles.nextLabel}>NEXT</Text>
+                                        </View>
+                                    </View>
                                 </View>
                                 <Text style={styles.nextPrayerTimeText}>{prayer.time}</Text>
-                            </View>
+                            </Animated.View>
                         );
                     } else {
                         return (
-                            <View key={prayer.name} style={styles.prayerTimeRow}>
+                            <Animated.View
+                                key={prayer.name}
+                                style={[styles.prayerTimeRow, {
+                                    opacity: fadeAnim,
+                                    transform: [{
+                                        translateY: fadeAnim.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [20, 0]
+                                        })
+                                    }]
+                                }]}
+                            >
                                 <View style={styles.prayerInfo}>
                                     <prayer.icon size={24} color="#2E8B57" />
                                     <Text style={styles.prayerName}>{prayer.name}</Text>
                                 </View>
                                 <Text style={styles.prayerTime}>{prayer.time}</Text>
-                            </View>
+                            </Animated.View>
                         );
                     }
                 })}
@@ -313,7 +416,7 @@ const PrayerTimesScreen = () => {
                     Please check with the masjid for any special announcements.
                 </Text>
             </View>
-        </ScrollView>
+        </Animated.ScrollView>
     );
 };
 
@@ -468,7 +571,6 @@ const styles = StyleSheet.create({
         marginVertical: 6,
         marginHorizontal: 4,
         elevation: 6,
-        shadowColor: '#2E8B57',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.4,
         shadowRadius: 8,
@@ -503,43 +605,61 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'transparent',
     },
+    prayerNameWithBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 12,
+    },
     prayerName: {
         fontSize: 18,
         color: '#333',
-        marginLeft: 12,
         fontWeight: '500',
     },
     currentPrayerName: {
         fontSize: 20,
         color: '#ffffff',
-        marginLeft: 12,
         fontWeight: 'bold',
     },
     nextPrayerNameText: {
         fontSize: 19,
         color: '#1565C0',
-        marginLeft: 12,
         fontWeight: '600',
     },
-    currentLabel: {
-        fontSize: 12,
-        color: '#ffffff',
-        fontWeight: 'bold',
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    currentBadge: {
+        marginLeft: 8,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
         paddingHorizontal: 6,
         paddingVertical: 2,
-        borderRadius: 10,
-        overflow: 'hidden',
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: 35,
+    },
+    nextBadge: {
+        marginLeft: 8,
+        backgroundColor: 'rgba(21, 101, 192, 0.15)',
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#1565C0',
+        minWidth: 35,
+    },
+    currentLabel: {
+        fontSize: 9,
+        color: '#2E8B57',
+        fontWeight: 'bold',
+        letterSpacing: 0.3,
+        textAlign: 'center',
     },
     nextLabel: {
-        fontSize: 11,
+        fontSize: 9,
         color: '#1565C0',
         fontWeight: 'bold',
-        backgroundColor: 'rgba(21, 101, 192, 0.1)',
-        paddingHorizontal: 5,
-        paddingVertical: 1,
-        borderRadius: 8,
-        overflow: 'hidden',
+        letterSpacing: 0.3,
+        textAlign: 'center',
     },
     prayerTime: {
         fontSize: 18,
