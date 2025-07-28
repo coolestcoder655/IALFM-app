@@ -83,7 +83,30 @@ const STORAGE_KEYS = {
 const DailyDuaScreen = () => {
     const [currentDua, setCurrentDua] = useState<Dua | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [timeLeft, setTimeLeft] = useState('');
     const spinValue = useRef(new Animated.Value(0)).current;
+    // Function to calculate time left until midnight
+    const getTimeLeftString = () => {
+        const now = new Date();
+        const midnight = new Date(now);
+        midnight.setHours(24, 0, 0, 0);
+        const diff = midnight.getTime() - now.getTime();
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        return `${hours.toString().padStart(2, '0')}:${minutes
+            .toString()
+            .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    };
+
+    // Update timer every second
+    useEffect(() => {
+        setTimeLeft(getTimeLeftString());
+        const interval = setInterval(() => {
+            setTimeLeft(getTimeLeftString());
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
 
     // Function to get a random dua
     const getRandomDua = (): Dua => {
@@ -207,7 +230,12 @@ const DailyDuaScreen = () => {
             <View style={styles.content}>
                 <View style={styles.header}>
                     <Text style={styles.title}>Daily Dua</Text>
-                    <Text style={styles.subtitle}>Your spiritual companion for today</Text>
+                    <Text style={styles.subtitle}>
+                        Your spiritual companion for today
+                        {timeLeft && (
+                            <Text style={styles.timerText}> · Resets in {timeLeft}</Text>
+                        )}
+                    </Text>
                     <Pressable style={styles.refreshIconButton} onPress={refreshDua}>
                         <Animated.View style={{ transform: [{ rotate: spin }] }}>
                             <RefreshCw size={20} color="#2E8B57" />
@@ -234,12 +262,6 @@ const DailyDuaScreen = () => {
                         <Text style={styles.sourceLabel}>Source:</Text>
                         <Text style={styles.sourceText}>{currentDua.source}</Text>
                     </View>
-                </View>
-
-                <View style={styles.infoContainer}>
-                    <Text style={styles.infoText}>
-                        This dua will refresh automatically at 12:00 AM tomorrow.
-                    </Text>
                 </View>
             </View>
         </ScrollView>
@@ -362,17 +384,10 @@ const styles = StyleSheet.create({
         color: '#666',
         fontStyle: 'italic',
     },
-    infoContainer: {
-        backgroundColor: '#e8f5e8',
-        padding: 15,
-        borderRadius: 10,
-        marginBottom: 20,
-    },
-    infoText: {
-        fontSize: 14,
+    timerText: {
         color: '#2E8B57',
-        textAlign: 'center',
-        lineHeight: 20,
+        fontWeight: '600',
+        fontSize: 15,
     },
     refreshButton: {
         backgroundColor: '#2E8B57',
