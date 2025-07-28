@@ -115,6 +115,7 @@ const PrayerTimesScreen = () => {
     }, [coordinates, setCoordinates]);
 
     useEffect(() => {
+
         const checkCurrentPrayer = () => {
             if (!prayerTimes || prayerTimes.length === 0) return;
 
@@ -174,6 +175,15 @@ const PrayerTimesScreen = () => {
                         activePrayer = prayer.name;
                         break;
                     }
+                }
+            }
+
+            // Special case: after midnight but before Fajr, highlight Isha
+            if (!activePrayer && prayerTimesWithMinutes.length > 1) {
+                const fajr = prayerTimesWithMinutes[0];
+                const isha = prayerTimesWithMinutes[prayerTimesWithMinutes.length - 1];
+                if (currentTimeInMinutes < fajr.timeInMinutes) {
+                    activePrayer = isha.name;
                 }
             }
 

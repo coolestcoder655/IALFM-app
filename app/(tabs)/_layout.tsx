@@ -33,6 +33,7 @@ const TabLayout = () => {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <TabBarIcon Icon={Home} color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -40,6 +41,7 @@ const TabLayout = () => {
         options={{
           title: 'Prayer Times',
           tabBarIcon: ({ color }) => <TabBarIcon Icon={Clock} color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -47,6 +49,7 @@ const TabLayout = () => {
         options={{
           title: 'Daily Dua',
           tabBarIcon: ({ color }) => <TabBarIcon Icon={BookText} color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -54,6 +57,7 @@ const TabLayout = () => {
         options={{
           title: 'Events',
           tabBarIcon: ({ color }) => <TabBarIcon Icon={Calendar} color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -61,6 +65,7 @@ const TabLayout = () => {
         options={{
           title: 'Programs',
           tabBarIcon: ({ color }) => <TabBarIcon Icon={BookOpen} color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -68,6 +73,7 @@ const TabLayout = () => {
         options={{
           title: 'Donate',
           tabBarIcon: ({ color }) => <TabBarIcon Icon={Heart} color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -75,6 +81,7 @@ const TabLayout = () => {
         options={{
           title: 'Community',
           tabBarIcon: ({ color }) => <TabBarIcon Icon={Users} color={color} />,
+          headerShown: false,
         }}
       />
     </Tabs>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, ScrollView, ActivityIndicator, Alert, Animated } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RefreshCw } from 'lucide-react-native';
@@ -83,6 +83,7 @@ const STORAGE_KEYS = {
 const DailyDuaScreen = () => {
     const [currentDua, setCurrentDua] = useState<Dua | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const spinValue = useRef(new Animated.Value(0)).current;
 
     // Function to get a random dua
     const getRandomDua = (): Dua => {
@@ -142,17 +143,37 @@ const DailyDuaScreen = () => {
         }
     };
 
+    // Function to spin the refresh icon
+    const spinIcon = () => {
+        spinValue.setValue(0);
+        Animated.timing(spinValue, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+        }).start();
+    };
+
     // Function to manually refresh dua (for testing or user preference)
     const refreshDua = () => {
+        spinIcon(); // Spin immediately when pressed
         Alert.alert(
             'Refresh Daily Dua',
             'Are you sure you want to get a new dua? This will replace your current daily dua.',
             [
                 { text: 'Cancel', style: 'cancel' },
-                { text: 'Yes', onPress: generateNewDua }
+                {
+                    text: 'Yes',
+                    onPress: generateNewDua
+                }
             ]
         );
     };
+
+    // Create the spin interpolation
+    const spin = spinValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
 
     useEffect(() => {
         loadDailyDua();
@@ -188,7 +209,9 @@ const DailyDuaScreen = () => {
                     <Text style={styles.title}>Daily Dua</Text>
                     <Text style={styles.subtitle}>Your spiritual companion for today</Text>
                     <Pressable style={styles.refreshIconButton} onPress={refreshDua}>
-                        <RefreshCw size={20} color="#2E8B57" />
+                        <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                            <RefreshCw size={20} color="#2E8B57" />
+                        </Animated.View>
                     </Pressable>
                 </View>
 
