@@ -46,7 +46,7 @@ importers:
         version: 14.2.0(expo@53.0.20(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0)))(graphql@15.8.0)(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))
       lucide-react-native:
         specifier: ^0.526.0
-        version: 0.526.0(react-native-svg@15.12.0(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+        version: 0.526.0(react-native-svg@15.11.2(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -77,6 +77,9 @@ importers:
       react-native-screens:
         specifier: ~4.11.1
         version: 4.11.1(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      react-native-svg:
+        specifier: 15.11.2
+        version: 15.11.2(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       react-native-web:
         specifier: ~0.20.0
         version: 0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -4457,8 +4460,8 @@ packages:
     peerDependencies:
       react-native: '*'
 
-  react-native-svg@15.12.0:
-    resolution: {integrity: sha512-iE25PxIJ6V0C6krReLquVw6R0QTsRTmEQc4K2Co3P6zsimU/jltcDBKYDy1h/5j9S/fqmMeXnpM+9LEWKJKI6A==}
+  react-native-svg@15.11.2:
+    resolution: {integrity: sha512-+YfF72IbWQUKzCIydlijV1fLuBsQNGMT6Da2kFlo1sh+LE3BIm/2Q7AR1zAAR6L0BFLi1WaQPLfFUC9bNZpOmw==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -10561,11 +10564,11 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-react-native@0.526.0(react-native-svg@15.12.0(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0):
+  lucide-react-native@0.526.0(react-native-svg@15.11.2(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0):
     dependencies:
       react: 19.0.0
       react-native: 0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0)
-      react-native-svg: 15.12.0(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      react-native-svg: 15.11.2(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
 
   make-dir@2.1.0:
     dependencies:
@@ -11530,7 +11533,7 @@ snapshots:
     dependencies:
       react-native: 0.73.6(@babel/core@7.28.0)(@babel/preset-env@7.28.0(@babel/core@7.28.0))(react@18.2.0)
 
-  react-native-svg@15.12.0(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0):
+  react-native-svg@15.11.2(react-native@0.79.5(@babel/core@7.28.0)(@react-native-community/cli@12.3.6)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0):
     dependencies:
       css-select: 5.2.2
       css-tree: 1.1.3

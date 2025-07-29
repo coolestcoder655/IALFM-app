@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Linking, Alert, Pressable } from 'react-native';
+import { StyleSheet, ScrollView, Linking, Alert, Pressable, SafeAreaView } from 'react-native';
 import { Heart, Home, BookOpen, Users, Lightbulb, ExternalLink, CreditCard } from 'lucide-react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -92,145 +92,147 @@ const DonateScreen = () => {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Heart size={32} color="white" />
-                <Text style={styles.headerTitle}>Support IALFM</Text>
-                <Text style={styles.headerSubtitle}>Your donations make a difference</Text>
-            </View>
+        <ScrollView>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.header}>
+                    <Heart size={32} color="white" />
+                    <Text style={styles.headerTitle}>Support IALFM</Text>
+                    <Text style={styles.headerSubtitle}>Your donations make a difference</Text>
+                </View>
 
-            <View style={styles.inspirationSection}>
-                <Text style={styles.inspirationQuote}>
-                    "The believer's shade on the Day of Resurrection will be his charity."
-                </Text>
-                <Text style={styles.inspirationSource}>- Prophet Muhammad (ﷺ)</Text>
-            </View>
+                <View style={styles.inspirationSection}>
+                    <Text style={styles.inspirationQuote}>
+                        "The believer's shade on the Day of Resurrection will be his charity."
+                    </Text>
+                    <Text style={styles.inspirationSource}>- Prophet Muhammad (ﷺ)</Text>
+                </View>
 
-            <View style={styles.impactSection}>
-                <Text style={styles.impactTitle}>Your Impact</Text>
-                <Text style={styles.impactText}>
-                    Alhumdulillah, through the generous support of our community, we completed our new masjid building in 2021.
-                    Your continued support helps us maintain this beautiful facility and expand our services to the community.
-                </Text>
-            </View>
+                <View style={styles.impactSection}>
+                    <Text style={styles.impactTitle}>Your Impact</Text>
+                    <Text style={styles.impactText}>
+                        Alhumdulillah, through the generous support of our community, we completed our new masjid building in 2021.
+                        Your continued support helps us maintain this beautiful facility and expand our services to the community.
+                    </Text>
+                </View>
 
-            <View style={styles.categoriesSection}>
-                <Text style={styles.sectionTitle}>Donation Categories</Text>
+                <View style={styles.categoriesSection}>
+                    <Text style={styles.sectionTitle}>Donation Categories</Text>
 
-                {donationCategories.map((category) => (
-                    <View key={category.id} style={styles.categoryCard}>
-                        <View style={styles.categoryHeader}>
-                            <View style={styles.categoryTitleRow}>
-                                <category.icon size={24} color="#2E8B57" />
-                                <Text style={styles.categoryTitle}>{category.title}</Text>
+                    {donationCategories.map((category) => (
+                        <View key={category.id} style={styles.categoryCard}>
+                            <View style={styles.categoryHeader}>
+                                <View style={styles.categoryTitleRow}>
+                                    <category.icon size={24} color="#2E8B57" />
+                                    <Text style={styles.categoryTitle}>{category.title}</Text>
+                                </View>
+                                <View
+                                    style={[
+                                        styles.priorityBadge,
+                                        { backgroundColor: getPriorityColor(category.priority) }
+                                    ]}
+                                >
+                                    <Text style={styles.priorityText}>
+                                        {getPriorityLabel(category.priority)}
+                                    </Text>
+                                </View>
                             </View>
-                            <View
-                                style={[
-                                    styles.priorityBadge,
-                                    { backgroundColor: getPriorityColor(category.priority) }
-                                ]}
+
+                            <Text style={styles.categoryDescription}>{category.description}</Text>
+
+                            <Pressable
+                                style={styles.donateButton}
+                                onPress={() => handleDonatePress(category.title)}
                             >
-                                <Text style={styles.priorityText}>
-                                    {getPriorityLabel(category.priority)}
-                                </Text>
-                            </View>
+                                <CreditCard size={20} color="white" />
+                                <Text style={styles.donateButtonText}>Donate Now</Text>
+                            </Pressable>
+                        </View>
+                    ))}
+                </View>
+
+                <View style={styles.waysToGiveSection}>
+                    <Text style={styles.waysTitle}>Ways to Give</Text>
+                    <View style={styles.waysList}>
+                        <View style={styles.wayItem}>
+                            <Text style={styles.wayTitle}>💳 Online Donation</Text>
+                            <Text style={styles.wayDescription}>Secure online donations through our website</Text>
                         </View>
 
-                        <Text style={styles.categoryDescription}>{category.description}</Text>
+                        <View style={styles.wayItem}>
+                            <Text style={styles.wayTitle}>🏦 Bank Transfer</Text>
+                            <Text style={styles.wayDescription}>Direct bank transfer to masjid account</Text>
+                        </View>
 
-                        <Pressable
-                            style={styles.donateButton}
-                            onPress={() => handleDonatePress(category.title)}
-                        >
-                            <CreditCard size={20} color="white" />
-                            <Text style={styles.donateButtonText}>Donate Now</Text>
-                        </Pressable>
-                    </View>
-                ))}
-            </View>
+                        <View style={styles.wayItem}>
+                            <Text style={styles.wayTitle}>💵 Cash/Check</Text>
+                            <Text style={styles.wayDescription}>In-person donations at the masjid</Text>
+                        </View>
 
-            <View style={styles.waysToGiveSection}>
-                <Text style={styles.waysTitle}>Ways to Give</Text>
-                <View style={styles.waysList}>
-                    <View style={styles.wayItem}>
-                        <Text style={styles.wayTitle}>💳 Online Donation</Text>
-                        <Text style={styles.wayDescription}>Secure online donations through our website</Text>
-                    </View>
+                        <View style={styles.wayItem}>
+                            <Text style={styles.wayTitle}>📅 Monthly Giving</Text>
+                            <Text style={styles.wayDescription}>Set up recurring monthly donations</Text>
+                        </View>
 
-                    <View style={styles.wayItem}>
-                        <Text style={styles.wayTitle}>🏦 Bank Transfer</Text>
-                        <Text style={styles.wayDescription}>Direct bank transfer to masjid account</Text>
-                    </View>
-
-                    <View style={styles.wayItem}>
-                        <Text style={styles.wayTitle}>💵 Cash/Check</Text>
-                        <Text style={styles.wayDescription}>In-person donations at the masjid</Text>
-                    </View>
-
-                    <View style={styles.wayItem}>
-                        <Text style={styles.wayTitle}>📅 Monthly Giving</Text>
-                        <Text style={styles.wayDescription}>Set up recurring monthly donations</Text>
-                    </View>
-
-                    <View style={styles.wayItem}>
-                        <Text style={styles.wayTitle}>🌟 Zakat & Sadaqah</Text>
-                        <Text style={styles.wayDescription}>Fulfill your religious obligations</Text>
+                        <View style={styles.wayItem}>
+                            <Text style={styles.wayTitle}>🌟 Zakat & Sadaqah</Text>
+                            <Text style={styles.wayDescription}>Fulfill your religious obligations</Text>
+                        </View>
                     </View>
                 </View>
-            </View>
 
-            <View style={styles.zakatSection}>
-                <Text style={styles.zakatTitle}>Zakat Information</Text>
-                <Text style={styles.zakatText}>
-                    IALFM accepts Zakat donations for eligible recipients in our community.
-                    Your Zakat helps support those in need and funds Islamic education programs.
-                </Text>
-                <Text style={styles.zakatNote}>
-                    Please specify if your donation is intended as Zakat when making your contribution.
-                </Text>
-            </View>
+                <View style={styles.zakatSection}>
+                    <Text style={styles.zakatTitle}>Zakat Information</Text>
+                    <Text style={styles.zakatText}>
+                        IALFM accepts Zakat donations for eligible recipients in our community.
+                        Your Zakat helps support those in need and funds Islamic education programs.
+                    </Text>
+                    <Text style={styles.zakatNote}>
+                        Please specify if your donation is intended as Zakat when making your contribution.
+                    </Text>
+                </View>
 
-            <View style={styles.transparencySection}>
-                <Text style={styles.transparencyTitle}>Financial Transparency</Text>
-                <Text style={styles.transparencyText}>
-                    We are committed to transparency in how your donations are used.
-                    Financial reports and updates on our projects are shared with the community regularly.
-                </Text>
-            </View>
+                <View style={styles.transparencySection}>
+                    <Text style={styles.transparencyTitle}>Financial Transparency</Text>
+                    <Text style={styles.transparencyText}>
+                        We are committed to transparency in how your donations are used.
+                        Financial reports and updates on our projects are shared with the community regularly.
+                    </Text>
+                </View>
 
-            <View style={styles.websiteSection}>
-                <Text style={styles.websiteTitle}>Make a Donation</Text>
-                <Text style={styles.websiteText}>
-                    For secure online donations and more information about supporting IALFM:
-                </Text>
-                <Pressable style={styles.websiteButton} onPress={openDonationWebsite}>
-                    <ExternalLink size={20} color="#2E8B57" />
-                    <Text style={styles.websiteButtonText}>Visit IALFM Website</Text>
-                </Pressable>
-            </View>
+                <View style={styles.websiteSection}>
+                    <Text style={styles.websiteTitle}>Make a Donation</Text>
+                    <Text style={styles.websiteText}>
+                        For secure online donations and more information about supporting IALFM:
+                    </Text>
+                    <Pressable style={styles.websiteButton} onPress={openDonationWebsite}>
+                        <ExternalLink size={20} color="#2E8B57" />
+                        <Text style={styles.websiteButtonText}>Visit IALFM Website</Text>
+                    </Pressable>
+                </View>
 
-            <View style={styles.contactSection}>
-                <Text style={styles.contactTitle}>Donation Inquiries</Text>
-                <Text style={styles.contactText}>
-                    For questions about donations, planned giving, or specific funding needs:
-                </Text>
-                <Text style={styles.contactInfo}>
-                    📧 Email: info@ialfm.org{'\n'}
-                    🌐 Website: ialfm.org{'\n'}
-                    🏢 Visit us at the masjid during community hours
-                </Text>
-            </View>
+                <View style={styles.contactSection}>
+                    <Text style={styles.contactTitle}>Donation Inquiries</Text>
+                    <Text style={styles.contactText}>
+                        For questions about donations, planned giving, or specific funding needs:
+                    </Text>
+                    <Text style={styles.contactInfo}>
+                        📧 Email: info@ialfm.org{'\n'}
+                        🌐 Website: ialfm.org{'\n'}
+                        🏢 Visit us at the masjid during community hours
+                    </Text>
+                </View>
 
-            <View style={styles.footerSection}>
-                <Text style={styles.footerText}>
-                    "And whatever you spend in good, it will be repaid to you in full, and you shall not be wronged."
-                </Text>
-                <Text style={styles.footerSource}>- Quran 2:272</Text>
-                <Text style={styles.footerGratitude}>
-                    جزاكم الله خيراً{'\n'}
-                    May Allah reward you with goodness
-                </Text>
-            </View>
+                <View style={styles.footerSection}>
+                    <Text style={styles.footerText}>
+                        "And whatever you spend in good, it will be repaid to you in full, and you shall not be wronged."
+                    </Text>
+                    <Text style={styles.footerSource}>- Quran 2:272</Text>
+                    <Text style={styles.footerGratitude}>
+                        جزاكم الله خيراً{'\n'}
+                        May Allah reward you with goodness
+                    </Text>
+                </View>
+            </SafeAreaView>
         </ScrollView>
     );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, ScrollView, ActivityIndicator, Alert, Animated } from 'react-native';
+import { StyleSheet, ScrollView, ActivityIndicator, Alert, Animated, SafeAreaView } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RefreshCw } from 'lucide-react-native';
@@ -226,44 +226,46 @@ const DailyDuaScreen = () => {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.content}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>Daily Dua</Text>
-                    <Text style={styles.subtitle}>
-                        Your spiritual companion for today
-                        {timeLeft && (
-                            <Text style={styles.timerText}> · Resets in {timeLeft}</Text>
-                        )}
-                    </Text>
-                    <Pressable style={styles.refreshIconButton} onPress={refreshDua}>
-                        <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                            <RefreshCw size={20} color="#2E8B57" />
-                        </Animated.View>
-                    </Pressable>
+        <ScrollView>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.content}>
+                    <View style={styles.header}>
+                        <Text style={styles.title}>Daily Dua</Text>
+                        <Text style={styles.subtitle}>
+                            Your spiritual companion for today
+                            {timeLeft && (
+                                <Text style={styles.timerText}> · Resets in {timeLeft}</Text>
+                            )}
+                        </Text>
+                        <Pressable style={styles.refreshIconButton} onPress={refreshDua}>
+                            <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                                <RefreshCw size={20} color="#2E8B57" />
+                            </Animated.View>
+                        </Pressable>
+                    </View>
+
+                    <View style={styles.duaCard}>
+                        <View style={styles.arabicContainer}>
+                            <Text style={styles.arabicText}>{currentDua.arabic}</Text>
+                        </View>
+
+                        <View style={styles.transliterationContainer}>
+                            <Text style={styles.sectionLabel}>Transliteration:</Text>
+                            <Text style={styles.transliterationText}>{currentDua.transliteration}</Text>
+                        </View>
+
+                        <View style={styles.translationContainer}>
+                            <Text style={styles.sectionLabel}>Translation:</Text>
+                            <Text style={styles.translationText}>{currentDua.translation}</Text>
+                        </View>
+
+                        <View style={styles.sourceContainer}>
+                            <Text style={styles.sourceLabel}>Source:</Text>
+                            <Text style={styles.sourceText}>{currentDua.source}</Text>
+                        </View>
+                    </View>
                 </View>
-
-                <View style={styles.duaCard}>
-                    <View style={styles.arabicContainer}>
-                        <Text style={styles.arabicText}>{currentDua.arabic}</Text>
-                    </View>
-
-                    <View style={styles.transliterationContainer}>
-                        <Text style={styles.sectionLabel}>Transliteration:</Text>
-                        <Text style={styles.transliterationText}>{currentDua.transliteration}</Text>
-                    </View>
-
-                    <View style={styles.translationContainer}>
-                        <Text style={styles.sectionLabel}>Translation:</Text>
-                        <Text style={styles.translationText}>{currentDua.translation}</Text>
-                    </View>
-
-                    <View style={styles.sourceContainer}>
-                        <Text style={styles.sourceLabel}>Source:</Text>
-                        <Text style={styles.sourceText}>{currentDua.source}</Text>
-                    </View>
-                </View>
-            </View>
+            </SafeAreaView>
         </ScrollView>
     );
 };

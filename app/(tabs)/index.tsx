@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Linking, Modal, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Linking, Modal, Alert, SafeAreaView } from 'react-native';
 import { MapPin, Phone, Mail, ExternalLink, X } from 'lucide-react-native';
 import { Pressable } from 'react-native';
 import { Text, View } from '@/components/Themed';
@@ -40,158 +40,160 @@ const HomeScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Islamic Association of{'\n'}Lewisville & Flower Mound</Text>
-        <Text style={styles.subtitle}>IALFM Masjid</Text>
-      </View>
-
-      <View style={styles.welcomeSection}>
-        <Text style={styles.welcomeTitle}>Welcome to IALFM</Text>
-        <Text style={styles.welcomeText}>
-          Alhumdulillah, after the successful completion of construction of our new IALFM Masjid building in 2021,
-          we have been using it regularly for Friday prayers and community activities.
-        </Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-
-        <Pressable style={styles.quickAction} onPress={viewPrayerTimes}>
-          <ExternalLink size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>View Prayer Times</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={openWebsite}>
-          <ExternalLink size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>Visit Website</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={openMaps}>
-          <MapPin size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>Get Directions</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={callMasjid}>
-          <Phone size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>Call Masjid</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={emailMasjid}>
-          <Mail size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>Email Us</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.servicesCard}>
-        <Text style={styles.sectionTitle}>Services & Facilities</Text>
-        <View style={styles.servicesList}>
-          <View style={styles.serviceRow}>
-            <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Daily Five Prayers</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Friday Jummah Prayers</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Quran School</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Sunday School</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Youth Programs</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Educational Programs</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <Mail size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Community Events</Text>
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Contact Information</Text>
-
-        <View style={styles.contactItem}>
-          <Mail size={18} color="#2E8B57" />
-          <View style={styles.contactTextContainer}>
-            <Text style={styles.contactLabel}>Email</Text>
-            <Text style={styles.contactValue}>info@ialfm.org</Text>
-          </View>
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Islamic Association of{'\n'}Lewisville & Flower Mound</Text>
+          <Text style={styles.subtitle}>IALFM Masjid</Text>
         </View>
 
-        <View style={styles.contactItem}>
-          <Phone size={18} color="#2E8B57" />
-          <View style={styles.contactTextContainer}>
-            <Text style={styles.contactLabel}>Phone</Text>
-            <Text style={styles.contactValue}>(972) 723-6335</Text>
-          </View>
-        </View>
-
-        <View style={styles.contactItem}>
-          <ExternalLink size={18} color="#2E8B57" />
-          <View style={styles.contactTextContainer}>
-            <Text style={styles.contactLabel}>Website</Text>
-            <Text style={styles.contactValue}>www.ialfm.org</Text>
-          </View>
-        </View>
-
-        <View style={styles.socialMediaSection}>
-          <Text style={styles.socialMediaTitle}>Follow Us</Text>
-          <Text style={styles.socialMediaText}>
-            Stay updated with our latest announcements and events on Facebook @IALFMMasjid
+        <View style={styles.welcomeSection}>
+          <Text style={styles.welcomeTitle}>Welcome to IALFM</Text>
+          <Text style={styles.welcomeText}>
+            Alhumdulillah, after the successful completion of construction of our new IALFM Masjid building in 2021,
+            we have been using it regularly for Friday prayers and community activities.
           </Text>
         </View>
-      </View>
 
-      {/* Email Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={emailModalVisible}
-        onRequestClose={() => setEmailModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Contact IALFM</Text>
-              <Pressable
-                style={styles.closeButton}
-                onPress={() => setEmailModalVisible(false)}
-              >
-                <X size={24} color="#666" />
-              </Pressable>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
+
+          <Pressable style={styles.quickAction} onPress={viewPrayerTimes}>
+            <ExternalLink size={20} color="#2E8B57" />
+            <Text style={styles.quickActionText}>View Prayer Times</Text>
+          </Pressable>
+
+          <Pressable style={styles.quickAction} onPress={openWebsite}>
+            <ExternalLink size={20} color="#2E8B57" />
+            <Text style={styles.quickActionText}>Visit Website</Text>
+          </Pressable>
+
+          <Pressable style={styles.quickAction} onPress={openMaps}>
+            <MapPin size={20} color="#2E8B57" />
+            <Text style={styles.quickActionText}>Get Directions</Text>
+          </Pressable>
+
+          <Pressable style={styles.quickAction} onPress={callMasjid}>
+            <Phone size={20} color="#2E8B57" />
+            <Text style={styles.quickActionText}>Call Masjid</Text>
+          </Pressable>
+
+          <Pressable style={styles.quickAction} onPress={emailMasjid}>
+            <Mail size={20} color="#2E8B57" />
+            <Text style={styles.quickActionText}>Email Us</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.servicesCard}>
+          <Text style={styles.sectionTitle}>Services & Facilities</Text>
+          <View style={styles.servicesList}>
+            <View style={styles.serviceRow}>
+              <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
+              <Text style={styles.serviceItemText}>Daily Five Prayers</Text>
             </View>
-
-            <Text style={styles.modalSubtitle}>Choose how you'd like to email us:</Text>
-
-            <Pressable style={styles.modalOption} onPress={openGmail}>
-              <Mail size={20} color="#EA4335" />
-              <Text style={styles.modalOptionText}>Open in Gmail</Text>
-            </Pressable>
-
-            <Pressable style={styles.modalOption} onPress={openMailto}>
-              <Mail size={20} color="#2E8B57" />
-              <Text style={styles.modalOptionText}>Open in Default Email App</Text>
-            </Pressable>
-
-            <Pressable
-              style={styles.cancelButton}
-              onPress={() => setEmailModalVisible(false)}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </Pressable>
+            <View style={styles.serviceRow}>
+              <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
+              <Text style={styles.serviceItemText}>Friday Jummah Prayers</Text>
+            </View>
+            <View style={styles.serviceRow}>
+              <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
+              <Text style={styles.serviceItemText}>Quran School</Text>
+            </View>
+            <View style={styles.serviceRow}>
+              <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
+              <Text style={styles.serviceItemText}>Sunday School</Text>
+            </View>
+            <View style={styles.serviceRow}>
+              <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
+              <Text style={styles.serviceItemText}>Youth Programs</Text>
+            </View>
+            <View style={styles.serviceRow}>
+              <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
+              <Text style={styles.serviceItemText}>Educational Programs</Text>
+            </View>
+            <View style={styles.serviceRow}>
+              <Mail size={20} color="#2E8B57" style={styles.serviceIcon} />
+              <Text style={styles.serviceItemText}>Community Events</Text>
+            </View>
           </View>
         </View>
-      </Modal>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Contact Information</Text>
+
+          <View style={styles.contactItem}>
+            <Mail size={18} color="#2E8B57" />
+            <View style={styles.contactTextContainer}>
+              <Text style={styles.contactLabel}>Email</Text>
+              <Text style={styles.contactValue}>info@ialfm.org</Text>
+            </View>
+          </View>
+
+          <View style={styles.contactItem}>
+            <Phone size={18} color="#2E8B57" />
+            <View style={styles.contactTextContainer}>
+              <Text style={styles.contactLabel}>Phone</Text>
+              <Text style={styles.contactValue}>(972) 723-6335</Text>
+            </View>
+          </View>
+
+          <View style={styles.contactItem}>
+            <ExternalLink size={18} color="#2E8B57" />
+            <View style={styles.contactTextContainer}>
+              <Text style={styles.contactLabel}>Website</Text>
+              <Text style={styles.contactValue}>www.ialfm.org</Text>
+            </View>
+          </View>
+
+          <View style={styles.socialMediaSection}>
+            <Text style={styles.socialMediaTitle}>Follow Us</Text>
+            <Text style={styles.socialMediaText}>
+              Stay updated with our latest announcements and events on Facebook @IALFMMasjid
+            </Text>
+          </View>
+        </View>
+
+        {/* Email Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={emailModalVisible}
+          onRequestClose={() => setEmailModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Contact IALFM</Text>
+                <Pressable
+                  style={styles.closeButton}
+                  onPress={() => setEmailModalVisible(false)}
+                >
+                  <X size={24} color="#666" />
+                </Pressable>
+              </View>
+
+              <Text style={styles.modalSubtitle}>Choose how you'd like to email us:</Text>
+
+              <Pressable style={styles.modalOption} onPress={openGmail}>
+                <Mail size={20} color="#EA4335" />
+                <Text style={styles.modalOptionText}>Open in Gmail</Text>
+              </Pressable>
+
+              <Pressable style={styles.modalOption} onPress={openMailto}>
+                <Mail size={20} color="#2E8B57" />
+                <Text style={styles.modalOptionText}>Open in Default Email App</Text>
+              </Pressable>
+
+              <Pressable
+                style={styles.cancelButton}
+                onPress={() => setEmailModalVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      </SafeAreaView>
     </ScrollView>
   );
 };

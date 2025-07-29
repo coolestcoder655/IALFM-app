@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Linking, Alert, Pressable } from 'react-native';
+import { StyleSheet, ScrollView, Linking, Alert, Pressable, SafeAreaView } from 'react-native';
 import { Users, MessageCircle, Briefcase, UserPlus, Mail, Facebook, Youtube, ExternalLink } from 'lucide-react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -146,154 +146,156 @@ const CommunityScreen = () => {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Users size={32} color="white" />
-                <Text style={styles.headerTitle}>Community</Text>
-                <Text style={styles.headerSubtitle}>Connect • Engage • Grow Together</Text>
-            </View>
+        <ScrollView>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.header}>
+                    <Users size={32} color="white" />
+                    <Text style={styles.headerTitle}>Community</Text>
+                    <Text style={styles.headerSubtitle}>Connect • Engage • Grow Together</Text>
+                </View>
 
-            <View style={styles.welcomeSection}>
-                <Text style={styles.welcomeTitle}>Welcome to Our Community</Text>
-                <Text style={styles.welcomeText}>
-                    IALFM is more than a place of worship - we are a vibrant community dedicated to serving Allah
-                    and supporting each other. Join us in building a strong, connected Islamic community in
-                    Lewisville and Flower Mound.
-                </Text>
-            </View>
+                <View style={styles.welcomeSection}>
+                    <Text style={styles.welcomeTitle}>Welcome to Our Community</Text>
+                    <Text style={styles.welcomeText}>
+                        IALFM is more than a place of worship - we are a vibrant community dedicated to serving Allah
+                        and supporting each other. Join us in building a strong, connected Islamic community in
+                        Lewisville and Flower Mound.
+                    </Text>
+                </View>
 
-            <View style={styles.connectSection}>
-                <Text style={styles.sectionTitle}>Stay Connected</Text>
+                <View style={styles.connectSection}>
+                    <Text style={styles.sectionTitle}>Stay Connected</Text>
 
-                {communityFeatures.map((feature) => (
-                    <View key={feature.id} style={styles.featureCard}>
-                        <View style={styles.featureHeader}>
-                            <feature.icon size={24} color="#2E8B57" />
-                            <Text style={styles.featureTitle}>{feature.title}</Text>
-                        </View>
-                        <Text style={styles.featureDescription}>{feature.description}</Text>
-                        <Pressable style={styles.featureButton} onPress={feature.action}>
-                            <ExternalLink size={16} color="#2E8B57" />
-                            <Text style={styles.featureButtonText}>Learn More</Text>
-                        </Pressable>
-                    </View>
-                ))}
-            </View>
-
-            <View style={styles.jobsSection}>
-                <Text style={styles.jobsTitle}>Join Our Team</Text>
-                <Text style={styles.jobsSubtitle}>
-                    IALFM is hiring dedicated individuals to join our vibrant community
-                </Text>
-
-                <View style={styles.jobsList}>
-                    {jobPositions.map((job) => (
-                        <View key={job.id} style={styles.jobCard}>
-                            <View style={styles.jobHeader}>
-                                <Text style={styles.jobTitle}>{job.title}</Text>
-                                <View
-                                    style={[
-                                        styles.jobTypeBadge,
-                                        { backgroundColor: getJobTypeColor(job.type) }
-                                    ]}
-                                >
-                                    <Text style={styles.jobTypeText}>
-                                        {getJobTypeLabel(job.type)}
-                                    </Text>
-                                </View>
+                    {communityFeatures.map((feature) => (
+                        <View key={feature.id} style={styles.featureCard}>
+                            <View style={styles.featureHeader}>
+                                <feature.icon size={24} color="#2E8B57" />
+                                <Text style={styles.featureTitle}>{feature.title}</Text>
                             </View>
-                            <Text style={styles.jobDepartment}>{job.department}</Text>
+                            <Text style={styles.featureDescription}>{feature.description}</Text>
+                            <Pressable style={styles.featureButton} onPress={feature.action}>
+                                <ExternalLink size={16} color="#2E8B57" />
+                                <Text style={styles.featureButtonText}>Learn More</Text>
+                            </Pressable>
                         </View>
                     ))}
                 </View>
 
-                <Pressable style={styles.jobsButton} onPress={openJobsPage}>
-                    <Briefcase size={20} color="#2E8B57" />
-                    <Text style={styles.jobsButtonText}>View Open Positions</Text>
-                </Pressable>
-            </View>
+                <View style={styles.jobsSection}>
+                    <Text style={styles.jobsTitle}>Join Our Team</Text>
+                    <Text style={styles.jobsSubtitle}>
+                        IALFM is hiring dedicated individuals to join our vibrant community
+                    </Text>
 
-            <View style={styles.volunteerSection}>
-                <Text style={styles.volunteerTitle}>Volunteer Opportunities</Text>
-                <Text style={styles.volunteerText}>
-                    We welcome volunteers to help with various activities and services:
-                </Text>
-                <View style={styles.volunteerList}>
-                    <Text style={styles.volunteerItem}>• Event organization and coordination</Text>
-                    <Text style={styles.volunteerItem}>• Educational program assistance</Text>
-                    <Text style={styles.volunteerItem}>• Masjid maintenance and cleaning</Text>
-                    <Text style={styles.volunteerItem}>• Community outreach programs</Text>
-                    <Text style={styles.volunteerItem}>• Translation services</Text>
-                    <Text style={styles.volunteerItem}>• Technology and media support</Text>
-                    <Text style={styles.volunteerItem}>• Youth program mentoring</Text>
+                    <View style={styles.jobsList}>
+                        {jobPositions.map((job) => (
+                            <View key={job.id} style={styles.jobCard}>
+                                <View style={styles.jobHeader}>
+                                    <Text style={styles.jobTitle}>{job.title}</Text>
+                                    <View
+                                        style={[
+                                            styles.jobTypeBadge,
+                                            { backgroundColor: getJobTypeColor(job.type) }
+                                        ]}
+                                    >
+                                        <Text style={styles.jobTypeText}>
+                                            {getJobTypeLabel(job.type)}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <Text style={styles.jobDepartment}>{job.department}</Text>
+                            </View>
+                        ))}
+                    </View>
+
+                    <Pressable style={styles.jobsButton} onPress={openJobsPage}>
+                        <Briefcase size={20} color="#2E8B57" />
+                        <Text style={styles.jobsButtonText}>View Open Positions</Text>
+                    </Pressable>
                 </View>
-                <Text style={styles.volunteerContact}>
-                    Contact us to learn about current volunteer opportunities.
-                </Text>
-            </View>
 
-            <View style={styles.servicesSection}>
-                <Text style={styles.servicesTitle}>Community Services</Text>
-                <View style={styles.servicesList}>
-                    <View style={styles.serviceItem}>
-                        <Text style={styles.serviceTitle}>🤝 Marriage Services</Text>
-                        <Text style={styles.serviceDescription}>Nikah ceremonies and marriage counseling</Text>
+                <View style={styles.volunteerSection}>
+                    <Text style={styles.volunteerTitle}>Volunteer Opportunities</Text>
+                    <Text style={styles.volunteerText}>
+                        We welcome volunteers to help with various activities and services:
+                    </Text>
+                    <View style={styles.volunteerList}>
+                        <Text style={styles.volunteerItem}>• Event organization and coordination</Text>
+                        <Text style={styles.volunteerItem}>• Educational program assistance</Text>
+                        <Text style={styles.volunteerItem}>• Masjid maintenance and cleaning</Text>
+                        <Text style={styles.volunteerItem}>• Community outreach programs</Text>
+                        <Text style={styles.volunteerItem}>• Translation services</Text>
+                        <Text style={styles.volunteerItem}>• Technology and media support</Text>
+                        <Text style={styles.volunteerItem}>• Youth program mentoring</Text>
                     </View>
+                    <Text style={styles.volunteerContact}>
+                        Contact us to learn about current volunteer opportunities.
+                    </Text>
+                </View>
 
-                    <View style={styles.serviceItem}>
-                        <Text style={styles.serviceTitle}>📖 Islamic Education</Text>
-                        <Text style={styles.serviceDescription}>Quran classes and Islamic studies for all ages</Text>
-                    </View>
+                <View style={styles.servicesSection}>
+                    <Text style={styles.servicesTitle}>Community Services</Text>
+                    <View style={styles.servicesList}>
+                        <View style={styles.serviceItem}>
+                            <Text style={styles.serviceTitle}>🤝 Marriage Services</Text>
+                            <Text style={styles.serviceDescription}>Nikah ceremonies and marriage counseling</Text>
+                        </View>
 
-                    <View style={styles.serviceItem}>
-                        <Text style={styles.serviceTitle}>🕌 Funeral Services</Text>
-                        <Text style={styles.serviceDescription}>Janazah prayers and funeral arrangements</Text>
-                    </View>
+                        <View style={styles.serviceItem}>
+                            <Text style={styles.serviceTitle}>📖 Islamic Education</Text>
+                            <Text style={styles.serviceDescription}>Quran classes and Islamic studies for all ages</Text>
+                        </View>
 
-                    <View style={styles.serviceItem}>
-                        <Text style={styles.serviceTitle}>💬 Counseling</Text>
-                        <Text style={styles.serviceDescription}> Spiritual guidance and family counseling</Text>
-                    </View >
+                        <View style={styles.serviceItem}>
+                            <Text style={styles.serviceTitle}>🕌 Funeral Services</Text>
+                            <Text style={styles.serviceDescription}>Janazah prayers and funeral arrangements</Text>
+                        </View>
 
-                    <View style={styles.serviceItem}>
-                        <Text style={styles.serviceTitle}>🍽️ Community Kitchen</Text>
-                        <Text style={styles.serviceDescription}> Community meals and food assistance</Text>
+                        <View style={styles.serviceItem}>
+                            <Text style={styles.serviceTitle}>💬 Counseling</Text>
+                            <Text style={styles.serviceDescription}> Spiritual guidance and family counseling</Text>
+                        </View >
+
+                        <View style={styles.serviceItem}>
+                            <Text style={styles.serviceTitle}>🍽️ Community Kitchen</Text>
+                            <Text style={styles.serviceDescription}> Community meals and food assistance</Text>
+                        </View >
                     </View >
                 </View >
-            </View >
 
-            <View style={styles.guidelinesSection}>
-                <Text style={styles.guidelinesTitle}>Community Guidelines</Text>
-                <Text style={styles.guidelinesText}>
-                    To maintain a respectful and welcoming environment for all:
-                </Text>
-                <View style={styles.guidelinesList}>
-                    <Text style={styles.guidelineItem}>• Treat all community members with respect and kindness</Text>
-                    <Text style={styles.guidelineItem}>• Maintain appropriate Islamic etiquette and dress code</Text>
-                    <Text style={styles.guidelineItem}>• Keep discussions constructive and beneficial</Text>
-                    <Text style={styles.guidelineItem}>• Respect the sanctity of the masjid space</Text>
-                    <Text style={styles.guidelineItem}>• Follow safety protocols and guidelines</Text>
-                    <Text style={styles.guidelineItem}>• Support community harmony and unity</Text>
+                <View style={styles.guidelinesSection}>
+                    <Text style={styles.guidelinesTitle}>Community Guidelines</Text>
+                    <Text style={styles.guidelinesText}>
+                        To maintain a respectful and welcoming environment for all:
+                    </Text>
+                    <View style={styles.guidelinesList}>
+                        <Text style={styles.guidelineItem}>• Treat all community members with respect and kindness</Text>
+                        <Text style={styles.guidelineItem}>• Maintain appropriate Islamic etiquette and dress code</Text>
+                        <Text style={styles.guidelineItem}>• Keep discussions constructive and beneficial</Text>
+                        <Text style={styles.guidelineItem}>• Respect the sanctity of the masjid space</Text>
+                        <Text style={styles.guidelineItem}>• Follow safety protocols and guidelines</Text>
+                        <Text style={styles.guidelineItem}>• Support community harmony and unity</Text>
+                    </View>
+                </View >
+
+                <View style={styles.contactSection}>
+                    <Text style={styles.contactTitle}>Get Involved</Text>
+                    <Text style={styles.contactText}>
+                        Ready to join our community or have questions? We'd love to hear from you:
+                    </Text>
+                    <Text style={styles.contactInfo}>
+                        📧 Email: info@ialfm.org{'\n'}
+                        🌐 Website: ialfm.org{'\n'}
+                        📱 Facebook: @IALFMMasjid{'\n'}
+                        🏢 Visit us at the masjid during community hours
+                    </Text>
+                    <Pressable style={styles.startButton} onPress={openStartPage}>
+                        <UserPlus size={20} color="white" />
+                        <Text style={styles.startButtonText}>Start Here - Connect with IALFM</Text>
+                    </Pressable>
                 </View>
-            </View >
-
-            <View style={styles.contactSection}>
-                <Text style={styles.contactTitle}>Get Involved</Text>
-                <Text style={styles.contactText}>
-                    Ready to join our community or have questions? We'd love to hear from you:
-                </Text>
-                <Text style={styles.contactInfo}>
-                    📧 Email: info@ialfm.org{'\n'}
-                    🌐 Website: ialfm.org{'\n'}
-                    📱 Facebook: @IALFMMasjid{'\n'}
-                    🏢 Visit us at the masjid during community hours
-                </Text>
-                <Pressable style={styles.startButton} onPress={openStartPage}>
-                    <UserPlus size={20} color="white" />
-                    <Text style={styles.startButtonText}>Start Here - Connect with IALFM</Text>
-                </Pressable>
-            </View>
-        </ScrollView >
+            </SafeAreaView>
+        </ScrollView>
     );
 };
 

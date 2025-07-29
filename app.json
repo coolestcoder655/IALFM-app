@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "IALFM - Islamic Association of Lewisville & Flower Mound",
+    "name": "IALFM",
     "slug": "ialfm-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,7 +15,12 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "maariz.ialfm.app"
+      "bundleIdentifier": "maariz2.ialfm.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "We need your location to show prayer times.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "We need your location to show prayer times."
+      }
     },
     "android": {
       "adaptiveIcon": {

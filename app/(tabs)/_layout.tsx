@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Home, Clock, Calendar, BookOpen, Heart, Users, BookText } from 'lucide-react-native';
+import { Home, Clock, BookOpen, Grid2X2 } from 'lucide-react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -48,39 +48,15 @@ const TabLayout = () => {
         name="daily-dua"
         options={{
           title: 'Daily Dua',
-          tabBarIcon: ({ color }) => <TabBarIcon Icon={BookText} color={color} />,
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
-        name="events"
-        options={{
-          title: 'Events',
-          tabBarIcon: ({ color }) => <TabBarIcon Icon={Calendar} color={color} />,
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
-        name="programs"
-        options={{
-          title: 'Programs',
           tabBarIcon: ({ color }) => <TabBarIcon Icon={BookOpen} color={color} />,
           headerShown: false,
         }}
       />
       <Tabs.Screen
-        name="donate"
+        name="menu"
         options={{
-          title: 'Donate',
-          tabBarIcon: ({ color }) => <TabBarIcon Icon={Heart} color={color} />,
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
-        name="community"
-        options={{
-          title: 'Community',
-          tabBarIcon: ({ color }) => <TabBarIcon Icon={Users} color={color} />,
+          title: 'Menu',
+          tabBarIcon: ({ color }) => <TabBarIcon Icon={Grid2X2} color={color} />,
           headerShown: false,
         }}
       />

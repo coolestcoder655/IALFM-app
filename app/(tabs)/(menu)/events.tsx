@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Linking, Pressable } from 'react-native';
+import { StyleSheet, ScrollView, Linking, Pressable, SafeAreaView } from 'react-native';
 import { Calendar, MapPin, Clock, Users, ExternalLink } from 'lucide-react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -106,85 +106,87 @@ const EventsScreen = () => {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Calendar size={32} color="white" />
-                <Text style={styles.headerTitle}>Events & Programs</Text>
-                <Text style={styles.headerSubtitle}>IALFM Community Activities</Text>
-            </View>
+        <ScrollView>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.header}>
+                    <Calendar size={32} color="white" />
+                    <Text style={styles.headerTitle}>Events & Programs</Text>
+                    <Text style={styles.headerSubtitle}>IALFM Community Activities</Text>
+                </View>
 
-            <View style={styles.infoSection}>
-                <Text style={styles.infoTitle}>Stay Updated</Text>
-                <Text style={styles.infoText}>
-                    Events and programs are regularly updated on our website, newsletter, and community WhatsApp group.
-                </Text>
-                <Pressable style={styles.websiteButton} onPress={openWebsite}>
-                    <ExternalLink size={20} color="#2E8B57" />
-                    <Text style={styles.websiteButtonText}>Visit Website for Latest Updates</Text>
-                </Pressable>
-            </View>
+                <View style={styles.infoSection}>
+                    <Text style={styles.infoTitle}>Stay Updated</Text>
+                    <Text style={styles.infoText}>
+                        Events and programs are regularly updated on our website, newsletter, and community WhatsApp group.
+                    </Text>
+                    <Pressable style={styles.websiteButton} onPress={openWebsite}>
+                        <ExternalLink size={20} color="#2E8B57" />
+                        <Text style={styles.websiteButtonText}>Visit Website for Latest Updates</Text>
+                    </Pressable>
+                </View>
 
-            <View style={styles.eventsSection}>
-                <Text style={styles.sectionTitle}>Regular Events & Programs</Text>
+                <View style={styles.eventsSection}>
+                    <Text style={styles.sectionTitle}>Regular Events & Programs</Text>
 
-                {events.map((event) => (
-                    <View key={event.id} style={styles.eventCard}>
-                        <View style={styles.eventHeader}>
-                            <Text style={styles.eventTitle}>{event.title}</Text>
-                            <View
-                                style={[
-                                    styles.eventType,
-                                    { backgroundColor: getEventTypeColor(event.type) }
-                                ]}
-                            >
-                                <Text style={styles.eventTypeText}>
-                                    {getEventTypeLabel(event.type)}
-                                </Text>
+                    {events.map((event) => (
+                        <View key={event.id} style={styles.eventCard}>
+                            <View style={styles.eventHeader}>
+                                <Text style={styles.eventTitle}>{event.title}</Text>
+                                <View
+                                    style={[
+                                        styles.eventType,
+                                        { backgroundColor: getEventTypeColor(event.type) }
+                                    ]}
+                                >
+                                    <Text style={styles.eventTypeText}>
+                                        {getEventTypeLabel(event.type)}
+                                    </Text>
+                                </View>
                             </View>
+
+                            <View style={styles.eventDetails}>
+                                <View style={styles.eventDetailRow}>
+                                    <Calendar size={16} color="#666" />
+                                    <Text style={styles.eventDetailText}>{event.date}</Text>
+                                </View>
+
+                                <View style={styles.eventDetailRow}>
+                                    <Clock size={16} color="#666" />
+                                    <Text style={styles.eventDetailText}>{event.time}</Text>
+                                </View>
+
+                                <View style={styles.eventDetailRow}>
+                                    <MapPin size={16} color="#666" />
+                                    <Text style={styles.eventDetailText}>{event.location}</Text>
+                                </View>
+                            </View>
+
+                            <Text style={styles.eventDescription}>{event.description}</Text>
                         </View>
+                    ))}
+                </View>
 
-                        <View style={styles.eventDetails}>
-                            <View style={styles.eventDetailRow}>
-                                <Calendar size={16} color="#666" />
-                                <Text style={styles.eventDetailText}>{event.date}</Text>
-                            </View>
+                <View style={styles.registrationSection}>
+                    <Text style={styles.registrationTitle}>Program Registration</Text>
+                    <Text style={styles.registrationText}>
+                        <Text style={styles.bold}>Quran School:</Text> Registration for new academic year opens in late July/August.{'\n\n'}
+                        <Text style={styles.bold}>Sunday School:</Text> Registration typically opens before the academic year begins.{'\n\n'}
+                        For program registration and more information, please visit our website or contact the masjid directly.
+                    </Text>
+                </View>
 
-                            <View style={styles.eventDetailRow}>
-                                <Clock size={16} color="#666" />
-                                <Text style={styles.eventDetailText}>{event.time}</Text>
-                            </View>
-
-                            <View style={styles.eventDetailRow}>
-                                <MapPin size={16} color="#666" />
-                                <Text style={styles.eventDetailText}>{event.location}</Text>
-                            </View>
-                        </View>
-
-                        <Text style={styles.eventDescription}>{event.description}</Text>
-                    </View>
-                ))}
-            </View>
-
-            <View style={styles.registrationSection}>
-                <Text style={styles.registrationTitle}>Program Registration</Text>
-                <Text style={styles.registrationText}>
-                    <Text style={styles.bold}>Quran School:</Text> Registration for new academic year opens in late July/August.{'\n\n'}
-                    <Text style={styles.bold}>Sunday School:</Text> Registration typically opens before the academic year begins.{'\n\n'}
-                    For program registration and more information, please visit our website or contact the masjid directly.
-                </Text>
-            </View>
-
-            <View style={styles.contactSection}>
-                <Text style={styles.contactTitle}>Event Information</Text>
-                <Text style={styles.contactText}>
-                    For specific event details, schedule changes, or to organize community events:
-                </Text>
-                <Text style={styles.contactInfo}>
-                    📧 Email: info@ialfm.org{'\n'}
-                    🌐 Website: ialfm.org{'\n'}
-                    📱 Follow us on Facebook @IALFMMasjid
-                </Text>
-            </View>
+                <View style={styles.contactSection}>
+                    <Text style={styles.contactTitle}>Event Information</Text>
+                    <Text style={styles.contactText}>
+                        For specific event details, schedule changes, or to organize community events:
+                    </Text>
+                    <Text style={styles.contactInfo}>
+                        📧 Email: info@ialfm.org{'\n'}
+                        🌐 Website: ialfm.org{'\n'}
+                        📱 Follow us on Facebook @IALFMMasjid
+                    </Text>
+                </View>
+            </SafeAreaView>
         </ScrollView>
     );
 };
