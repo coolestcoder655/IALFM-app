@@ -567,12 +567,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    // No padding here
   },
   carouselItem: {
     backgroundColor: '#fff',
     borderRadius: 20,
-    // No padding
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
@@ -581,8 +579,8 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 2,
     marginHorizontal: 10,
-    width: 340,
-    height: 340,
+    width: 400,
+    height: 400,
   },
   carouselImage: {
     width: 300,
