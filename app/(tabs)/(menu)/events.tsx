@@ -6,7 +6,7 @@ import { Text, View } from '@/components/Themed';
 interface Event {
     id: string;
     title: string;
-    date: string;
+    date: string | string[];
     time: string;
     location: string;
     description: string;
@@ -106,7 +106,7 @@ const EventsScreen = () => {
     };
 
     return (
-        <ScrollView>
+        < ScrollView >
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <Calendar size={32} color="white" />
@@ -162,9 +162,9 @@ const EventsScreen = () => {
                             </View>
 
                             <Text style={styles.eventDescription}>{event.description}</Text>
-                        </View>
+                        </View >
                     ))}
-                </View>
+                </View >
 
                 <View style={styles.registrationSection}>
                     <Text style={styles.registrationTitle}>Program Registration</Text>
@@ -186,8 +186,8 @@ const EventsScreen = () => {
                         📱 Follow us on Facebook @IALFMMasjid
                     </Text>
                 </View>
-            </SafeAreaView>
-        </ScrollView>
+            </SafeAreaView >
+        </ScrollView >
     );
 };
 

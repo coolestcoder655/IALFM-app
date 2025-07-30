@@ -1,5 +1,5 @@
 import { StyleSheet, ScrollView, Linking, Modal, SafeAreaView, Dimensions, ImageBackground } from 'react-native';
-import { MapPin, Phone, Mail, ExternalLink, X, Car } from 'lucide-react-native';
+import { MapPin, Phone, Mail, ExternalLink, X, HandCoins } from 'lucide-react-native';
 import { Pressable } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useState, useRef } from 'react';
@@ -7,8 +7,10 @@ import { useRouter } from 'expo-router';
 import Carousel, {
   ICarouselInstance,
 } from "react-native-reanimated-carousel";
+
 import { announcements } from './(menu)/announcements'
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
+import events from './(menu)/events';
 
 interface CarouselItem {
   title: string;
@@ -86,6 +88,41 @@ const HomeScreen = () => {
     Linking.openURL('mailto:info@ialfm.org');
   };
 
+
+
+  // Build eventsByDate from imported events array
+  type EventType = {
+    id: string;
+    title: string;
+    date: string | string[];
+    time: string;
+    location: string;
+    description: string;
+    type: string;
+  };
+
+  const eventsArray: EventType[] = events;
+  const eventsByDate: Record<string, { type: string; title: string; description: string }[]> = {};
+  eventsArray.forEach(event => {
+    if (Array.isArray(event.date)) {
+      event.date.forEach(date => {
+        if (!eventsByDate[date]) eventsByDate[date] = [];
+        eventsByDate[date].push({ type: event.type, title: event.title, description: event.description });
+      });
+    } else {
+      if (!eventsByDate[event.date]) eventsByDate[event.date] = [];
+      eventsByDate[event.date].push({ type: event.type, title: event.title, description: event.description });
+    }
+  });
+
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const onSelectDay = (day: { dateString: string }) => {
+    setSelectedDay(day.dateString);
+    setDropdownVisible(true);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -128,7 +165,7 @@ const HomeScreen = () => {
                   data={carouselItems}
                   scrollAnimationDuration={1200}
                   autoPlay={autoPlay}
-                  autoPlayInterval={3500}
+                  autoPlayInterval={2000}
                   renderItem={({ item }) => (
                     <View style={styles.carouselItem}>
                       {typeof item.image === 'string' ? (
@@ -176,38 +213,45 @@ const HomeScreen = () => {
         )}
 
         {/* View Events/Programs Via Calender */}
+
         <View style={styles.section}>
           <Calendar
-            onDayPress={day => {
-              console.log('selected day', day);
-            }}
+            onDayPress={onSelectDay}
+            markedDates={selectedDay ? { [selectedDay]: { selected: true, selectedColor: '#2E8B57' } } : {}}
           />
+
+          {/* Dropdown for events/programs on selected day */}
+          {dropdownVisible && selectedDay && (
+            <View style={styles.dropdownContainer}>
+              <View style={styles.dropdownHeader}>
+                <Text style={styles.dropdownTitle}>Events & Programs on {selectedDay}</Text>
+                <Pressable onPress={() => setDropdownVisible(false)} style={styles.dropdownCloseBtn}>
+                  <X size={20} color="#666" />
+                </Pressable>
+              </View>
+              {eventsByDate[selectedDay] ? (
+                eventsByDate[selectedDay].map((event, idx) => (
+                  <View key={idx} style={styles.dropdownItem}>
+                    <Text style={styles.dropdownItemType}>{event.type}</Text>
+                    <Text style={styles.dropdownItemTitle}>{event.title}</Text>
+                    <Text style={styles.dropdownItemDesc}>{event.description}</Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.dropdownNoEvents}>No events or programs for this day.</Text>
+              )}
+            </View>
+          )}
         </View>
 
-        <Pressable style={styles.quickAction} onPress={viewPrayerTimes}>
-          <View><ExternalLink size={20} color="#2E8B57" /></View>
-          <Text style={styles.quickActionText}>View Prayer Times</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={openWebsite}>
-          <View><ExternalLink size={20} color="#2E8B57" /></View>
-          <Text style={styles.quickActionText}>Visit Website</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={openMaps}>
-          <View><MapPin size={20} color="#2E8B57" /></View>
-          <Text style={styles.quickActionText}>Get Directions</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={callMasjid}>
-          <View><Phone size={20} color="#2E8B57" /></View>
-          <Text style={styles.quickActionText}>Call Masjid</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={emailMasjid}>
-          <View><Mail size={20} color="#2E8B57" /></View>
-          <Text style={styles.quickActionText}>Email Us</Text>
-        </Pressable>
+        {/* Donate Here Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Donate Here</Text>
+          <Pressable style={styles.quickAction} onPress={() => router.navigate('/donate')}>
+            <HandCoins size={24} color="#2E8B57" />
+            <Text style={styles.quickActionText}>Donate</Text>
+          </Pressable>
+        </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Contact Information</Text>
@@ -603,5 +647,65 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
     lineHeight: 22,
+  },
+  dropdownContainer: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  dropdownHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f8f9fa',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  dropdownTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2E8B57',
+  },
+  dropdownCloseBtn: {
+    padding: 4,
+  },
+  dropdownItem: {
+    marginBottom: 12,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  dropdownItemType: {
+    fontSize: 13,
+    color: '#ad8b00',
+    fontWeight: 'bold',
+    marginBottom: 2,
+    textTransform: 'uppercase',
+  },
+  dropdownItemTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#2E8B57',
+    marginBottom: 2,
+  },
+  dropdownItemDesc: {
+    fontSize: 14,
+    color: '#333',
+  },
+  dropdownNoEvents: {
+    fontSize: 14,
+    color: '#888',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
