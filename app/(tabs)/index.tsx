@@ -1,9 +1,58 @@
-import { StyleSheet, ScrollView, Linking, Modal, Alert, SafeAreaView } from 'react-native';
-import { MapPin, Phone, Mail, ExternalLink, X } from 'lucide-react-native';
+import { StyleSheet, ScrollView, Linking, Modal, SafeAreaView, Dimensions, ImageBackground } from 'react-native';
+import { MapPin, Phone, Mail, ExternalLink, X, Car } from 'lucide-react-native';
 import { Pressable } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
+import Carousel, {
+  ICarouselInstance,
+} from "react-native-reanimated-carousel";
+import { announcements } from './(menu)/announcements'
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+
+interface CarouselItem {
+  title: string;
+  description: string;
+  image: string;
+};
+
+const carouselItems: CarouselItem[] = [
+  {
+    title: 'Daily Five Prayers',
+    description: 'Join us for the five daily prayers held at the masjid throughout the day.',
+    image: 'https://placeimg.com/640/360/any',
+  },
+  {
+    title: 'Friday Jummah Prayers',
+    description: 'Attend our weekly Friday Jummah prayers and khutbah.',
+    image: 'https://placeimg.com/640/360/people',
+  },
+  {
+    title: 'Quran School',
+    description: 'Enroll your children in our Quran School for structured Quranic education.',
+    image: 'https://placeimg.com/640/360/education',
+  },
+  {
+    title: 'Sunday School',
+    description: 'Our Sunday School offers Islamic education for kids every Sunday morning.',
+    image: require('../../assets/images/sunday-school.jpg'),
+  },
+  {
+    title: 'Youth Programs',
+    description: 'Participate in youth programs designed for spiritual and social growth.',
+    image: 'https://placeimg.com/640/360/youth',
+  },
+  {
+    title: 'Educational Programs',
+    description: 'Benefit from our educational programs for all ages and backgrounds.',
+    image: 'https://placeimg.com/640/360/tech',
+  },
+  {
+    title: 'Community Events',
+    description: 'Join our community events and stay connected with fellow members.',
+    image: require('../../assets/images/header.png'),
+  },
+];
 
 const HomeScreen = () => {
   const [emailModalVisible, setEmailModalVisible] = useState(false);
@@ -30,99 +79,141 @@ const HomeScreen = () => {
   };
 
   const openGmail = () => {
-    Linking.openURL('https://mail.google.com/mail/?view=cm&to=info@ialfm.org')
-    setEmailModalVisible(false);
+    Linking.openURL('https://mail.google.com/mail/?view=cm&to=info@ialfm.org');
   };
 
   const openMailto = () => {
     Linking.openURL('mailto:info@ialfm.org');
-    setEmailModalVisible(false);
   };
 
   return (
-    <ScrollView>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Islamic Association of{'\n'}Lewisville & Flower Mound</Text>
-          <Text style={styles.subtitle}>IALFM Masjid</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Header Section */}
+        <ImageBackground
+          source={require('@/assets/images/header.png')}
+          style={styles.header}
+          imageStyle={{ resizeMode: 'cover' }}
+        >
+          <Text style={styles.title}>IALFM</Text>
+          <Text style={[styles.subtitle, { textAlign: 'center' }]}>Welcome to the Islamic Association of Lewisville and Flower Mound</Text>
+        </ImageBackground>
+
+        {/* Carousel Section */}
+        <View style={styles.carouselContainer}>
+          {(() => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [autoPlay, setAutoPlay] = useState(true);
+            const carouselRef = useRef<ICarouselInstance | null>(null);
+            const autoPlayTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+            // Handler for manual scroll
+            const handleSnapToItem = (index: number) => {
+              setCurrentIndex(index);
+              setAutoPlay(false);
+              if (autoPlayTimeout.current) clearTimeout(autoPlayTimeout.current);
+              // Resume auto play after 3 seconds
+              autoPlayTimeout.current = setTimeout(() => {
+                setAutoPlay(true);
+              }, 3000);
+            };
+
+            return (
+              <>
+                <Carousel
+                  ref={carouselRef}
+                  loop
+                  width={400}
+                  height={400}
+                  data={carouselItems}
+                  scrollAnimationDuration={1200}
+                  autoPlay={autoPlay}
+                  autoPlayInterval={3500}
+                  renderItem={({ item }) => (
+                    <View style={styles.carouselItem}>
+                      {typeof item.image === 'string' ? (
+                        <ImageBackground
+                          source={{ uri: item.image }}
+                          style={styles.carouselImage}
+                          imageStyle={{ borderRadius: 20 }}
+                        />
+                      ) : (
+                        <ImageBackground
+                          source={item.image}
+                          style={styles.carouselImage}
+                          imageStyle={{ borderRadius: 20 }}
+                        />
+                      )}
+                      <Text style={styles.carouselTitle}>{item.title}</Text>
+                      <Text style={styles.carouselDescription}>{item.description}</Text>
+                    </View>
+                  )}
+                  mode="parallax"
+                  onSnapToItem={handleSnapToItem}
+                />
+                {/* Pagination removed as requested */}
+              </>
+            );
+          })()}
         </View>
 
-        <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeTitle}>Welcome to IALFM</Text>
-          <Text style={styles.welcomeText}>
-            Alhumdulillah, after the successful completion of construction of our new IALFM Masjid building in 2021,
-            we have been using it regularly for Friday prayers and community activities.
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-
-          <Pressable style={styles.quickAction} onPress={viewPrayerTimes}>
-            <ExternalLink size={20} color="#2E8B57" />
-            <Text style={styles.quickActionText}>View Prayer Times</Text>
-          </Pressable>
-
-          <Pressable style={styles.quickAction} onPress={openWebsite}>
-            <ExternalLink size={20} color="#2E8B57" />
-            <Text style={styles.quickActionText}>Visit Website</Text>
-          </Pressable>
-
-          <Pressable style={styles.quickAction} onPress={openMaps}>
-            <MapPin size={20} color="#2E8B57" />
-            <Text style={styles.quickActionText}>Get Directions</Text>
-          </Pressable>
-
-          <Pressable style={styles.quickAction} onPress={callMasjid}>
-            <Phone size={20} color="#2E8B57" />
-            <Text style={styles.quickActionText}>Call Masjid</Text>
-          </Pressable>
-
-          <Pressable style={styles.quickAction} onPress={emailMasjid}>
-            <Mail size={20} color="#2E8B57" />
-            <Text style={styles.quickActionText}>Email Us</Text>
-          </Pressable>
-        </View>
-
-        <View style={styles.servicesCard}>
-          <Text style={styles.sectionTitle}>Services & Facilities</Text>
-          <View style={styles.servicesList}>
-            <View style={styles.serviceRow}>
-              <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
-              <Text style={styles.serviceItemText}>Daily Five Prayers</Text>
-            </View>
-            <View style={styles.serviceRow}>
-              <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
-              <Text style={styles.serviceItemText}>Friday Jummah Prayers</Text>
-            </View>
-            <View style={styles.serviceRow}>
-              <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
-              <Text style={styles.serviceItemText}>Quran School</Text>
-            </View>
-            <View style={styles.serviceRow}>
-              <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
-              <Text style={styles.serviceItemText}>Sunday School</Text>
-            </View>
-            <View style={styles.serviceRow}>
-              <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
-              <Text style={styles.serviceItemText}>Youth Programs</Text>
-            </View>
-            <View style={styles.serviceRow}>
-              <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
-              <Text style={styles.serviceItemText}>Educational Programs</Text>
-            </View>
-            <View style={styles.serviceRow}>
-              <Mail size={20} color="#2E8B57" style={styles.serviceIcon} />
-              <Text style={styles.serviceItemText}>Community Events</Text>
-            </View>
+        {/* Announcement Glimpse */}
+        {announcements && announcements.length > 0 && (
+          <View style={[styles.section, { marginBottom: 20 }]}>
+            <Text style={styles.announcementGlimpseTitle}>Latest Announcement</Text>
+            <Text style={styles.announcementGlimpseText} numberOfLines={2} ellipsizeMode="tail">
+              {announcements[0].content.slice(0, 120).replace(/\n/g, ' ')}{announcements[0].content.length > 120 ? '...' : ''}
+            </Text>
+            <Pressable
+              style={{ marginTop: 8, alignSelf: 'flex-end', backgroundColor: '#ffe58f', borderRadius: 6, paddingVertical: 4, paddingHorizontal: 12 }}
+              onPress={() => {
+                router.push('/(tabs)/(menu)/announcements');
+              }}
+            >
+              <Text style={{ color: '#ad8b00', fontWeight: 'bold', fontSize: 14 }}>Show more</Text>
+            </Pressable>
           </View>
+        )}
+
+        {/* View Events/Programs Via Calender */}
+        <View style={styles.section}>
+          <Calendar
+            onDayPress={day => {
+              console.log('selected day', day);
+            }}
+          />
         </View>
+
+        <Pressable style={styles.quickAction} onPress={viewPrayerTimes}>
+          <View><ExternalLink size={20} color="#2E8B57" /></View>
+          <Text style={styles.quickActionText}>View Prayer Times</Text>
+        </Pressable>
+
+        <Pressable style={styles.quickAction} onPress={openWebsite}>
+          <View><ExternalLink size={20} color="#2E8B57" /></View>
+          <Text style={styles.quickActionText}>Visit Website</Text>
+        </Pressable>
+
+        <Pressable style={styles.quickAction} onPress={openMaps}>
+          <View><MapPin size={20} color="#2E8B57" /></View>
+          <Text style={styles.quickActionText}>Get Directions</Text>
+        </Pressable>
+
+        <Pressable style={styles.quickAction} onPress={callMasjid}>
+          <View><Phone size={20} color="#2E8B57" /></View>
+          <Text style={styles.quickActionText}>Call Masjid</Text>
+        </Pressable>
+
+        <Pressable style={styles.quickAction} onPress={emailMasjid}>
+          <View><Mail size={20} color="#2E8B57" /></View>
+          <Text style={styles.quickActionText}>Email Us</Text>
+        </Pressable>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Contact Information</Text>
 
           <View style={styles.contactItem}>
-            <Mail size={18} color="#2E8B57" />
+            <View><Mail size={18} color="#2E8B57" /></View>
             <View style={styles.contactTextContainer}>
               <Text style={styles.contactLabel}>Email</Text>
               <Text style={styles.contactValue}>info@ialfm.org</Text>
@@ -130,7 +221,7 @@ const HomeScreen = () => {
           </View>
 
           <View style={styles.contactItem}>
-            <Phone size={18} color="#2E8B57" />
+            <View><Phone size={18} color="#2E8B57" /></View>
             <View style={styles.contactTextContainer}>
               <Text style={styles.contactLabel}>Phone</Text>
               <Text style={styles.contactValue}>(972) 723-6335</Text>
@@ -138,7 +229,7 @@ const HomeScreen = () => {
           </View>
 
           <View style={styles.contactItem}>
-            <ExternalLink size={18} color="#2E8B57" />
+            <View><ExternalLink size={18} color="#2E8B57" /></View>
             <View style={styles.contactTextContainer}>
               <Text style={styles.contactLabel}>Website</Text>
               <Text style={styles.contactValue}>www.ialfm.org</Text>
@@ -193,32 +284,37 @@ const HomeScreen = () => {
             </View>
           </View>
         </Modal>
-      </SafeAreaView>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
-};
+}
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+
   container: {
-    flex: 1,
     backgroundColor: '#f8f9fa',
+    paddingBottom: 30,
+    minHeight: Dimensions.get('window').height,
   },
   header: {
-    backgroundColor: '#2E8B57',
     padding: 30,
     alignItems: 'center',
+    height: 180,
+    width: '100%',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
   title: {
-    fontSize: 24,
+    fontSize: 48,
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
     marginBottom: 5,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 32,
     color: 'white',
     opacity: 0.9,
   },
@@ -434,5 +530,80 @@ const styles = StyleSheet.create({
     color: '#2E8B57',
     fontWeight: '500',
     letterSpacing: 0.1,
+  },
+  announcementGlimpse: {
+    backgroundColor: '#fffbe6',
+    borderRadius: 10,
+    padding: 16,
+    marginHorizontal: 20,
+    marginBottom: 18,
+    marginTop: 6,
+    borderWidth: 1,
+    borderColor: '#ffe58f',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  announcementGlimpseTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#ad8b00',
+    marginBottom: 4,
+  },
+  announcementGlimpseText: {
+    fontSize: 15,
+    color: '#333',
+    marginBottom: 2,
+  },
+  announcementGlimpseDate: {
+    fontSize: 13,
+    color: '#b7a200',
+    fontStyle: 'italic',
+  },
+  carouselContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // No padding here
+  },
+  carouselItem: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+    marginHorizontal: 10,
+    width: 340,
+    height: 340,
+  },
+  carouselImage: {
+    width: 300,
+    height: 180,
+    borderRadius: 20,
+    marginBottom: 18,
+    backgroundColor: '#e9ecef',
+    overflow: 'hidden',
+    // No padding here
+  },
+  carouselTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2E8B57',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  carouselDescription: {
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });

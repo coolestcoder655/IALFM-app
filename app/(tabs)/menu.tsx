@@ -1,15 +1,9 @@
-
-
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, Dimensions, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Phone, Wallet, XCircle, Lock } from 'lucide-react-native';
+import { Phone, Wallet, XCircle, Lock, Megaphone } from 'lucide-react-native';
 
-const numColumns = 6;
 const itemMargin = 15;
-const screenWidth = Dimensions.get('window').width;
-const gridMaxWidth = Math.min(screenWidth, 1000);
-const itemSize = (gridMaxWidth - itemMargin * (numColumns + 1)) / numColumns;
 
 const MenuScreen = () => {
     const router = useRouter();
@@ -20,25 +14,25 @@ const MenuScreen = () => {
                 <Text style={styles.title}>Menu</Text>
                 <Text style={styles.subtitle}>View Additional Pages</Text>
             </View>
-            <View style={[styles.grid, { maxWidth: gridMaxWidth }]}>
+            <View style={styles.grid}>
                 {/* Row 1 */}
                 <Pressable
                     style={({ pressed }) => [styles.square, pressed && styles.squarePressed]}
-                    onPress={() => router.push('/(tabs)/prayer-times')}
+                    onPress={() => router.navigate('/prayer-times')}
                 >
                     <Phone size={28} color={'#2E8B57'} />
                     <Text style={styles.label}>Prayer Times</Text>
                 </Pressable>
                 <Pressable
                     style={({ pressed }) => [styles.square, pressed && styles.squarePressed]}
-                    onPress={() => router.push('/(tabs)/daily-dua')}
+                    onPress={() => router.navigate('/daily-dua')}
                 >
                     <Wallet size={28} color={'#2E8B57'} />
                     <Text style={styles.label}>Daily Dua</Text>
                 </Pressable>
                 <Pressable
                     style={({ pressed }) => [styles.square, pressed && styles.squarePressed]}
-                    onPress={() => router.push('/(tabs)/(menu)/events')}
+                    onPress={() => router.navigate('/events')}
                 >
                     <XCircle size={28} color={'#2E8B57'} />
                     <Text style={styles.label}>Events</Text>
@@ -46,24 +40,32 @@ const MenuScreen = () => {
                 {/* Row 2 */}
                 <Pressable
                     style={({ pressed }) => [styles.square, pressed && styles.squarePressed]}
-                    onPress={() => router.push('/(tabs)/(menu)/donate')}
+                    onPress={() => router.navigate('/donate')}
                 >
                     <Phone size={28} color={'#2E8B57'} />
                     <Text style={styles.label}>Donate</Text>
                 </Pressable>
                 <Pressable
                     style={({ pressed }) => [styles.square, pressed && styles.squarePressed]}
-                    onPress={() => router.push('/(tabs)/(menu)/programs')}
+                    onPress={() => router.navigate('/programs')}
                 >
                     <Wallet size={28} color={'#2E8B57'} />
                     <Text style={styles.label}>Programs</Text>
                 </Pressable>
                 <Pressable
                     style={({ pressed }) => [styles.square, pressed && styles.squarePressed]}
-                    onPress={() => router.push('/(tabs)/(menu)/community')}
+                    onPress={() => router.navigate('/community')}
                 >
                     <Lock size={28} color={'#2E8B57'} />
                     <Text style={styles.label}>Community</Text>
+                </Pressable>
+                {/* Row 3 */}
+                <Pressable
+                    style={({ pressed }) => [styles.square, pressed && styles.squarePressed]}
+                    onPress={() => router.navigate('/announcements')}
+                >
+                    <Megaphone size={28} color={'#2E8B57'} />
+                    <Text style={styles.label}>Announcements</Text>
                 </Pressable>
             </View>
         </ScrollView>
@@ -103,8 +105,8 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     square: {
-        width: itemSize,
-        height: itemSize,
+        minWidth: 90,
+        minHeight: 90,
         margin: itemMargin / 2,
         backgroundColor: 'transparent',
         borderRadius: 14,
@@ -118,7 +120,9 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 2,
         transitionDuration: '100ms',
-        padding: 0,
+        paddingVertical: 18,
+        paddingHorizontal: 18,
+        alignSelf: 'flex-start',
     },
     squarePressed: {
         opacity: 0.7,

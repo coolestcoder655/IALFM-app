@@ -60,6 +60,14 @@ const TabLayout = () => {
           headerShown: false,
         }}
       />
+      <Tabs.Screen
+        name="(menu)"
+        options={{
+          tabBarShowLabel: false,
+          headerShown: false,
+          href: null,
+        }}
+      />
     </Tabs>
   );
 };
