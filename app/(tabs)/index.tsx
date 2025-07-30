@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
   carouselItem: {
     backgroundColor: '#fff',
     borderRadius: 20,
-    padding: 20,
+    // No padding
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
