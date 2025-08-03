@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, ActivityIndicator, Button, Animated, Easing } from 'react-native';
+import { StyleSheet, ActivityIndicator, Animated, Easing } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { Clock, MapPin } from 'lucide-react-native';
 import { getPrayerTimes } from '@/apis/getPrayerTimes';
@@ -44,7 +44,7 @@ const PrayerTimesScreen = () => {
         Animated.sequence([
             Animated.timing(currentPrayerScale, {
                 toValue: 1.1,
-                duration: 300,
+                duration: 150,
                 easing: Easing.elastic(1.2),
                 useNativeDriver: true,
             }),
@@ -177,6 +177,23 @@ const PrayerTimesScreen = () => {
                 }
             }
 
+            // If no prayer found with the tight window, use a broader approach
+            // Find which prayer period we're currently in
+            if (!activePrayer) {
+                for (let i = 0; i < prayerTimesWithMinutes.length; i++) {
+                    const currentPrayerTime = prayerTimesWithMinutes[i];
+                    const nextPrayerTime = prayerTimesWithMinutes[i + 1];
+
+                    // If current time is after this prayer and before the next prayer
+                    if (currentTimeInMinutes >= currentPrayerTime.timeInMinutes) {
+                        if (!nextPrayerTime || currentTimeInMinutes < nextPrayerTime.timeInMinutes) {
+                            activePrayer = currentPrayerTime.name;
+                            break;
+                        }
+                    }
+                }
+            }
+
             // If no prayer found with the wide window, try a simpler approach
             if (!activePrayer) {
                 // Find the most recent prayer that has passed
@@ -290,6 +307,49 @@ const PrayerTimesScreen = () => {
         };
     };
 
+    const getCurrentPrayerTimeLeft = () => {
+        if (!prayerTimes || prayerTimes.length === 0 || !currentPrayer) {
+            return 0;
+        }
+
+        const currentHour = currentTime.getHours();
+        const currentMinute = currentTime.getMinutes();
+        const currentTimeInMinutes = currentHour * 60 + currentMinute;
+
+        // Convert prayer times to minutes for comparison
+        const prayerTimesInMinutes = prayerTimes.map((prayer) => {
+            const timeMatch = prayer.time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+
+            if (!timeMatch) return NaN;
+
+            const hours = parseInt(timeMatch[1]);
+            const minutes = parseInt(timeMatch[2]);
+            const period = timeMatch[3].toUpperCase();
+
+            let hour24 = hours;
+
+            if (period === 'PM' && hours !== 12) {
+                hour24 += 12;
+            } else if (period === 'AM' && hours === 12) {
+                hour24 = 0;
+            }
+
+            return hour24 * 60 + minutes;
+        });
+
+        // Find the next prayer after the current prayer
+        for (let i = 0; i < prayerTimesInMinutes.length; i++) {
+            if (currentTimeInMinutes < prayerTimesInMinutes[i]) {
+                return prayerTimesInMinutes[i] - currentTimeInMinutes;
+            }
+        }
+
+        // If past all prayers, time until Fajr tomorrow
+        const minutesUntilMidnight = 24 * 60 - currentTimeInMinutes;
+        const fajrTomorrowMinutes = prayerTimesInMinutes[0];
+        return minutesUntilMidnight + fajrTomorrowMinutes;
+    };
+
     const formatTimeLeft = (minutes: number) => {
         const hours = Math.floor(minutes / 60);
         const mins = minutes % 60;
@@ -297,6 +357,7 @@ const PrayerTimesScreen = () => {
     };
 
     const nextPrayer = getCurrentPrayerStatus();
+    const currentPrayerTimeLeft = getCurrentPrayerTimeLeft();
 
     // Show loading screen while fetching location or prayer times
     if (!coordinates || isLoading) {
@@ -364,6 +425,16 @@ const PrayerTimesScreen = () => {
                         Please arrive early for better seating
                     </Text>
                 </Animated.View>
+            )}
+
+            {currentPrayer && (
+                <View style={styles.currentPrayerSection}>
+                    <Text style={styles.currentPrayerLabel}>Current Prayer</Text>
+                    <Text style={styles.currentPrayerName}>{currentPrayer}</Text>
+                    <Text style={styles.currentPrayerTimeLeft}>
+                        ends in {formatTimeLeft(currentPrayerTimeLeft)}
+                    </Text>
+                </View>
             )}
 
             <View style={styles.nextPrayerSection}>
@@ -572,15 +643,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#ff9800',
     },
+    currentPrayerTimeLeft: {
+        fontSize: 16,
+        color: '#ff9800',
+        marginTop: 5,
+    },
     nextPrayerSection: {
-        backgroundColor: '#e8f5e8',
         margin: 15,
         marginTop: 0,
         padding: 20,
-        borderRadius: 10,
         alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#2E8B57',
+        backgroundColor: '#f8f9fa',
     },
     nextPrayerLabel: {
         fontSize: 16,
