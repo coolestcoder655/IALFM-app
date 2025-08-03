@@ -440,9 +440,6 @@ const PrayerTimesScreen = () => {
             <View style={styles.nextPrayerSection}>
                 <Text style={styles.nextPrayerLabel}>Next Prayer</Text>
                 <Text style={styles.nextPrayerName}>{nextPrayer.next}</Text>
-                <Text style={styles.timeLeft}>
-                    in {formatTimeLeft(nextPrayer.timeLeft)}
-                </Text>
             </View>
 
             <View style={styles.prayerTimesSection}>
@@ -654,6 +651,12 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: 'center',
         backgroundColor: '#f8f9fa',
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        borderRadius: 10,
     },
     nextPrayerLabel: {
         fontSize: 16,
@@ -664,11 +667,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: '#2E8B57',
-    },
-    timeLeft: {
-        fontSize: 16,
-        color: '#2E8B57',
-        marginTop: 5,
     },
     prayerTimesSection: {
         backgroundColor: 'white',

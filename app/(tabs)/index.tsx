@@ -1,13 +1,56 @@
-import { StyleSheet, ScrollView, Linking, Modal, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Linking, Modal, Dimensions, Image } from 'react-native';
 import { MapPin, Phone, Mail, ExternalLink, X } from 'lucide-react-native';
 import { Pressable } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import Carousel from 'react-native-reanimated-carousel';
+import { useSharedValue } from 'react-native-reanimated';
+
+interface ProgramCarouselItem {
+  id: string;
+  title: string;
+  description: string;
+  image: any; // Use any for require() images
+}
 
 const HomeScreen = () => {
   const [emailModalVisible, setEmailModalVisible] = useState(false);
   const router = useRouter();
+  const progress = useSharedValue<number>(0);
+  const screenWidth = Dimensions.get('window').width;
+  const carouselItems: ProgramCarouselItem[] = [
+    {
+      id: '1',
+      title: 'Friday Jummah Prayers',
+      description: 'Attend our weekly Jummah prayers every Friday.',
+      image: require('@/assets/images/jummah.jpg'),
+    },
+    {
+      id: '2',
+      title: 'Quran School',
+      description: 'Enroll your children in our Quran school.',
+      image: require('@/assets/images/quranClasses.jpg'),
+    },
+    {
+      id: '3',
+      title: 'Sunday School',
+      description: 'Educational programs for children and youth.',
+      image: require('@/assets/images/sundarySchool.jpg'),
+    },
+    {
+      id: '4',
+      title: 'Pillars Academy',
+      description: 'Comprehensive Islamic education and character development.',
+      image: require('@/assets/images/pillarsAcademy.png'),
+    },
+    {
+      id: '5',
+      title: 'Join Our Team',
+      description: 'We are hiring! Explore opportunities to serve our community.',
+      image: require('@/assets/images/weAreHiring.jpg'),
+    },
+  ];
 
   const openWebsite = () => {
     Linking.openURL('https://www.ialfm.org/');
@@ -48,12 +91,38 @@ const HomeScreen = () => {
         <Text style={styles.subtitle}>IALFM Masjid</Text>
       </View>
 
-      <View style={styles.welcomeSection}>
-        <Text style={styles.welcomeTitle}>Welcome to IALFM</Text>
-        <Text style={styles.welcomeText}>
-          Alhumdulillah, after the successful completion of construction of our new IALFM Masjid building in 2021,
-          we have been using it regularly for Friday prayers and community activities.
-        </Text>
+      <View style={styles.heroSection}>
+        <Image source={require('@/assets/images/headerImage.png')} style={styles.heroImage} resizeMode="cover" />
+        <View style={styles.heroOverlay}>
+          <Text style={styles.heroTitle}>Welcome to IALFM</Text>
+          <Text style={styles.heroSubtitle}>Building a Strong Muslim Community</Text>
+        </View>
+      </View>
+
+      <View style={styles.carouselContainer}>
+        <Carousel
+          autoPlay={true}
+          autoPlayInterval={3000}
+          data={carouselItems}
+          height={300}
+          loop
+          pagingEnabled
+          snapEnabled
+          width={screenWidth - 30}
+          mode='parallax'
+          modeConfig={{
+            parallaxScrollingScale: 0.9,
+            parallaxScrollingOffset: 50,
+          }}
+          onProgressChange={progress}
+          renderItem={({ item }) => (
+            <View style={styles.carouselItem}>
+              <Image source={item.image} style={styles.carouselImage} resizeMode="cover" />
+              <Text style={styles.carouselTitle}>{item.title}</Text>
+              <Text style={styles.carouselDescription}>{item.description}</Text>
+            </View>
+          )}
+        />
       </View>
 
       <View style={styles.section}>
@@ -82,6 +151,18 @@ const HomeScreen = () => {
         <Pressable style={styles.quickAction} onPress={emailMasjid}>
           <Mail size={20} color="#2E8B57" />
           <Text style={styles.quickActionText}>Email Us</Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.featuredSection}>
+        <Text style={styles.sectionTitle}>Pillars Academy</Text>
+        <Image source={require('@/assets/images/pillarsAcademy.png')} style={styles.featuredImage} resizeMode="cover" />
+        <Text style={styles.featuredDescription}>
+          Our comprehensive Islamic education program designed to build strong foundations in faith, character, and academic excellence.
+          Pillars Academy offers structured learning for students of all ages.
+        </Text>
+        <Pressable style={styles.learnMoreButton} onPress={openWebsite}>
+          <Text style={styles.learnMoreText}>Learn More</Text>
         </Pressable>
       </View>
 
@@ -152,6 +233,18 @@ const HomeScreen = () => {
             Stay updated with our latest announcements and events on Facebook @IALFMMasjid
           </Text>
         </View>
+      </View>
+
+      <View style={styles.hiringSection}>
+        <Text style={styles.sectionTitle}>Join Our Team</Text>
+        <Image source={require('@/assets/images/weAreHiring.jpg')} style={styles.featuredImage} resizeMode="cover" />
+        <Text style={styles.featuredDescription}>
+          IALFM is always looking for dedicated individuals to join our mission of serving the Muslim community.
+          We have opportunities in education, administration, and community outreach.
+        </Text>
+        <Pressable style={styles.learnMoreButton} onPress={openWebsite}>
+          <Text style={styles.learnMoreText}>View Opportunities</Text>
+        </Pressable>
       </View>
 
       {/* Email Modal */}
@@ -434,5 +527,135 @@ const styles = StyleSheet.create({
     color: '#2E8B57',
     fontWeight: '500',
     letterSpacing: 0.1,
+  },
+  carouselContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    backgroundColor: '#f8f9fa',
+  },
+  carouselItem: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    margin: 10,
+    padding: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  carouselTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2E8B57',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  carouselDescription: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#333',
+    lineHeight: 22,
+    paddingHorizontal: 10,
+  },
+  carouselImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  featuredSection: {
+    padding: 20,
+    backgroundColor: 'white',
+    margin: 15,
+    marginTop: 0,
+    borderRadius: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  featuredImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  featuredDescription: {
+    fontSize: 16,
+    color: '#333',
+    lineHeight: 24,
+    textAlign: 'left',
+    marginBottom: 20,
+  },
+  learnMoreButton: {
+    backgroundColor: '#2E8B57',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  learnMoreText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  hiringSection: {
+    padding: 20,
+    backgroundColor: '#fff8f0',
+    margin: 15,
+    marginTop: 0,
+    borderRadius: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: '#f0e6d6',
+  },
+  heroSection: {
+    position: 'relative',
+    height: 200,
+    margin: 15,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  heroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  heroOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(46, 139, 87, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  heroTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  heroSubtitle: {
+    fontSize: 16,
+    color: 'white',
+    textAlign: 'center',
+    opacity: 0.9,
   },
 });
