@@ -22,7 +22,9 @@ const HomeScreen = () => {
   };
 
   const callMasjid = () => {
-    Linking.openURL('tel:+19727236335');
+    alert('No phone number available for this demo.');
+    // Uncomment the line below to enable calling functionality
+    // Linking.openURL('tel:+19727236335');
   };
 
   const emailMasjid = () => {

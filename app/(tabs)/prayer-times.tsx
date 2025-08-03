@@ -128,8 +128,22 @@ const PrayerTimesScreen = () => {
 
             // Convert prayer times to minutes for comparison
             const prayerTimesWithMinutes = prayerTimes.map(prayer => {
-                const [time, period] = prayer.time.split(' ');
-                const [hours, minutes] = time.split(':').map(Number);
+                // Use regex to parse time format like "4:52 AM" or "1:15 PM"
+                const timeMatch = prayer.time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+
+                if (!timeMatch) {
+                    console.log(`Failed to parse time in checkCurrentPrayer: ${prayer.time}`);
+                    return {
+                        name: prayer.name,
+                        timeInMinutes: NaN,
+                        originalTime: prayer.time
+                    };
+                }
+
+                const hours = parseInt(timeMatch[1]);
+                const minutes = parseInt(timeMatch[2]);
+                const period = timeMatch[3].toUpperCase();
+
                 let hour24 = hours;
 
                 if (period === 'PM' && hours !== 12) {
@@ -233,9 +247,19 @@ const PrayerTimesScreen = () => {
         const currentTimeInMinutes = currentHour * 60 + currentMinute;
 
         // Convert prayer times to minutes for comparison
-        const prayerTimesInMinutes = prayerTimes.map(prayer => {
-            const [time, period] = prayer.time.split(' ');
-            const [hours, minutes] = time.split(':').map(Number);
+        const prayerTimesInMinutes = prayerTimes.map((prayer, index) => {
+            // Use regex to parse time format like "4:52 AM" or "1:15 PM"
+            const timeMatch = prayer.time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+
+            if (!timeMatch) {
+                console.log(`Failed to parse time: ${prayer.time}`);
+                return NaN;
+            }
+
+            const hours = parseInt(timeMatch[1]);
+            const minutes = parseInt(timeMatch[2]);
+            const period = timeMatch[3].toUpperCase();
+
             let hour24 = hours;
 
             if (period === 'PM' && hours !== 12) {
@@ -244,7 +268,8 @@ const PrayerTimesScreen = () => {
                 hour24 = 0;
             }
 
-            return hour24 * 60 + minutes;
+            const timeInMinutes = hour24 * 60 + minutes;
+            return timeInMinutes;
         });
 
         // Find the next prayer today
@@ -256,7 +281,6 @@ const PrayerTimesScreen = () => {
                 };
             }
         }
-
         // If past all prayers, next is Fajr tomorrow
         const minutesUntilMidnight = 24 * 60 - currentTimeInMinutes;
         const fajrTomorrowMinutes = prayerTimesInMinutes[0]; // Fajr is the first prayer
@@ -365,7 +389,7 @@ const PrayerTimesScreen = () => {
                                 <View style={isCurrentPrayer ? [styles.currentPrayerInfo, { backgroundColor: '#2E8B57' }] : styles.currentPrayerInfo}>
                                     <prayer.icon size={28} color="#ffffff" />
                                     <View style={isCurrentPrayer ? [styles.prayerNameWithBadge, { backgroundColor: '#2E8B57' }] : styles.prayerNameWithBadge}>
-                                        <Text style={styles.currentPrayerName}>{prayer.name}</Text>
+                                        <Text style={styles.currentPrayerItemName}>{prayer.name}</Text>
                                         <View style={styles.currentBadge}>
                                             <Text style={styles.currentLabel}>NOW</Text>
                                         </View>
@@ -528,6 +552,26 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#2E8B57',
     },
+    currentPrayerSection: {
+        backgroundColor: '#fff3e0',
+        margin: 15,
+        marginTop: 0,
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#ff9800',
+    },
+    currentPrayerLabel: {
+        fontSize: 16,
+        color: '#ff9800',
+        marginBottom: 5,
+    },
+    currentPrayerName: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#ff9800',
+    },
     nextPrayerSection: {
         backgroundColor: '#e8f5e8',
         margin: 15,
@@ -634,7 +678,7 @@ const styles = StyleSheet.create({
         color: '#333',
         fontWeight: '500',
     },
-    currentPrayerName: {
+    currentPrayerItemName: {
         fontSize: 20,
         color: '#ffffff',
         fontWeight: 'bold',
