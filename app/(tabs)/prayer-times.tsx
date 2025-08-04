@@ -143,7 +143,6 @@ const PrayerTimesScreen = () => {
 
             // Convert prayer times to minutes for comparison
             const prayerTimesWithMinutes = prayerTimes.map(prayer => {
-                // Use regex to parse time format like "4:52 AM" or "1:15 PM"
                 const timeMatch = prayer.time.match(/(\d+):(\d+)\s*(AM|PM)/i);
 
                 if (!timeMatch) {
@@ -177,59 +176,28 @@ const PrayerTimesScreen = () => {
             // Sort by time to ensure proper order
             prayerTimesWithMinutes.sort((a, b) => a.timeInMinutes - b.timeInMinutes);
 
-            // Much more generous current prayer detection
-            for (let i = 0; i < prayerTimesWithMinutes.length; i++) {
-                const prayer = prayerTimesWithMinutes[i];
-
-                // Very wide window: 30 minutes before to 90 minutes after prayer time
-                const windowStart = prayer.timeInMinutes - 30;
-                const windowEnd = prayer.timeInMinutes + 90;
-
-                // If we're in this prayer's window
-                if (currentTimeInMinutes >= windowStart && currentTimeInMinutes <= windowEnd) {
-                    activePrayer = prayer.name;
-                    break;
-                }
-            }
-
-            // If no prayer found with the tight window, use a broader approach
             // Find which prayer period we're currently in
-            if (!activePrayer) {
-                for (let i = 0; i < prayerTimesWithMinutes.length; i++) {
-                    const currentPrayerTime = prayerTimesWithMinutes[i];
-                    const nextPrayerTime = prayerTimesWithMinutes[i + 1];
+            // Current prayer is the most recent prayer that has passed
+            for (let i = 0; i < prayerTimesWithMinutes.length; i++) {
+                const currentPrayerTime = prayerTimesWithMinutes[i];
+                const nextPrayerTime = prayerTimesWithMinutes[i + 1];
 
-                    // If current time is after this prayer and before the next prayer
-                    if (currentTimeInMinutes >= currentPrayerTime.timeInMinutes) {
-                        if (!nextPrayerTime || currentTimeInMinutes < nextPrayerTime.timeInMinutes) {
-                            activePrayer = currentPrayerTime.name;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // If no prayer found with the wide window, try a simpler approach
-            if (!activePrayer) {
-                // Find the most recent prayer that has passed
-                for (let i = prayerTimesWithMinutes.length - 1; i >= 0; i--) {
-                    const prayer = prayerTimesWithMinutes[i];
-
-                    // If current time is within 2 hours after this prayer
-                    if (currentTimeInMinutes >= prayer.timeInMinutes &&
-                        currentTimeInMinutes <= prayer.timeInMinutes + 120) {
-                        activePrayer = prayer.name;
+                // If current time is after this prayer time
+                if (currentTimeInMinutes >= currentPrayerTime.timeInMinutes) {
+                    // And before the next prayer (or it's the last prayer of the day)
+                    if (!nextPrayerTime || currentTimeInMinutes < nextPrayerTime.timeInMinutes) {
+                        activePrayer = currentPrayerTime.name;
                         break;
                     }
                 }
             }
 
-            // Special case: after midnight but before Fajr, highlight Isha
-            if (!activePrayer && prayerTimesWithMinutes.length > 1) {
+            // Special case: if we're before the first prayer of the day (Fajr), 
+            // then we're still in Isha time from the previous day
+            if (!activePrayer && prayerTimesWithMinutes.length > 0) {
                 const fajr = prayerTimesWithMinutes[0];
-                const isha = prayerTimesWithMinutes[prayerTimesWithMinutes.length - 1];
                 if (currentTimeInMinutes < fajr.timeInMinutes) {
-                    activePrayer = isha.name;
+                    activePrayer = 'Isha'; // Assume Isha is the last prayer
                 }
             }
 

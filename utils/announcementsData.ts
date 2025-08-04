@@ -84,6 +84,15 @@ export const announcements: Announcement[] = [
     type: "general",
     isPinned: false,
   },
+  {
+    id: "9",
+    title: "IALFM is Hiring! Multiple Open Position",
+    date: new Date("2025-08-18"),
+    content:
+      "We are hiring for Religious Director, Sisters Program Lead, Youth Program Lead, and Facility Manager positions. Send your resume to bod@ialfm.org.",
+    type: "urgent",
+    isPinned: true,
+  },
 ];
 
 // Helper function to get the most recent announcement
