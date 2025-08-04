@@ -86,11 +86,6 @@ const HomeScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Islamic Association of{'\n'}Lewisville & Flower Mound</Text>
-        <Text style={styles.subtitle}>IALFM Masjid</Text>
-      </View>
-
       <View style={styles.heroSection}>
         <Image source={require('@/assets/images/headerImage.png')} style={styles.heroImage} resizeMode="cover" />
         <View style={styles.heroOverlay}>
@@ -127,6 +122,10 @@ const HomeScreen = () => {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Pressable style={styles.quickAction} onPress={() => router.navigate('/is-offline')}>
+          <Text style={styles.quickActionText}>Check Internet Status</Text>
+        </Pressable>
+
 
         <Pressable style={styles.quickAction} onPress={viewPrayerTimes}>
           <ExternalLink size={20} color="#2E8B57" />
@@ -151,18 +150,6 @@ const HomeScreen = () => {
         <Pressable style={styles.quickAction} onPress={emailMasjid}>
           <Mail size={20} color="#2E8B57" />
           <Text style={styles.quickActionText}>Email Us</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.featuredSection}>
-        <Text style={styles.sectionTitle}>Pillars Academy</Text>
-        <Image source={require('@/assets/images/pillarsAcademy.png')} style={styles.featuredImage} resizeMode="cover" />
-        <Text style={styles.featuredDescription}>
-          Our comprehensive Islamic education program designed to build strong foundations in faith, character, and academic excellence.
-          Pillars Academy offers structured learning for students of all ages.
-        </Text>
-        <Pressable style={styles.learnMoreButton} onPress={openWebsite}>
-          <Text style={styles.learnMoreText}>Learn More</Text>
         </Pressable>
       </View>
 
@@ -235,18 +222,6 @@ const HomeScreen = () => {
         </View>
       </View>
 
-      <View style={styles.hiringSection}>
-        <Text style={styles.sectionTitle}>Join Our Team</Text>
-        <Image source={require('@/assets/images/weAreHiring.jpg')} style={styles.featuredImage} resizeMode="cover" />
-        <Text style={styles.featuredDescription}>
-          IALFM is always looking for dedicated individuals to join our mission of serving the Muslim community.
-          We have opportunities in education, administration, and community outreach.
-        </Text>
-        <Pressable style={styles.learnMoreButton} onPress={openWebsite}>
-          <Text style={styles.learnMoreText}>View Opportunities</Text>
-        </Pressable>
-      </View>
-
       {/* Email Modal */}
       <Modal
         animationType="fade"
@@ -299,9 +274,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   header: {
+    position: 'relative',
     backgroundColor: '#2E8B57',
     padding: 30,
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  headerImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  headerOverlay: {
+    position: 'relative',
+    zIndex: 1,
+    alignItems: 'center',
+    backgroundColor: 'rgba(46, 139, 87, 0.8)',
+    padding: 10,
+    borderRadius: 10,
   },
   title: {
     fontSize: 24,
@@ -535,12 +529,14 @@ const styles = StyleSheet.create({
   },
   carouselItem: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#ffffff',
     borderRadius: 15,
     margin: 10,
     padding: 20,
+    minHeight: 280,
+    maxHeight: 320,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -564,8 +560,10 @@ const styles = StyleSheet.create({
   carouselImage: {
     width: '100%',
     height: 120,
+    maxHeight: 200,
     borderRadius: 10,
     marginBottom: 15,
+    resizeMode: 'cover',
   },
   featuredSection: {
     padding: 20,
@@ -582,8 +580,10 @@ const styles = StyleSheet.create({
   featuredImage: {
     width: '100%',
     height: 200,
+    maxHeight: 250,
     borderRadius: 10,
     marginBottom: 15,
+    resizeMode: 'cover',
   },
   featuredDescription: {
     fontSize: 16,
@@ -621,6 +621,7 @@ const styles = StyleSheet.create({
   heroSection: {
     position: 'relative',
     height: 200,
+    maxHeight: 250,
     margin: 15,
     borderRadius: 15,
     overflow: 'hidden',
@@ -633,6 +634,8 @@ const styles = StyleSheet.create({
   heroImage: {
     width: '100%',
     height: '100%',
+    maxHeight: 250,
+    resizeMode: 'cover',
   },
   heroOverlay: {
     position: 'absolute',

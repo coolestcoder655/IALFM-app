@@ -6,6 +6,8 @@ import { getLocation } from '@/apis/getLocation';
 import { Text, View } from '@/components/Themed';
 import { usePrayerTimes } from '@/context/prayerTimesContext';
 import { useLocation } from '@/context/locationContext';
+import { useInternetStatus } from '@/context/internetContext';
+import { useRouter } from 'expo-router';
 
 const PrayerTimesScreen = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -14,12 +16,25 @@ const PrayerTimesScreen = () => {
     const [currentPrayer, setCurrentPrayer] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isFriday, setIsFriday] = useState(false);
+    const { isConnected } = useInternetStatus();
+    const router = useRouter();
 
     // Animation values
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
     const currentPrayerScale = useRef(new Animated.Value(1)).current;
     const timeUpdateAnim = useRef(new Animated.Value(1)).current;
+
+    const redirectToOffline = () => {
+        router.navigate('/is-offline');
+    }
+
+    // Check internet connection
+    useEffect(() => {
+        if (!isConnected) {
+            redirectToOffline();
+        }
+    }, [isConnected]);
 
     // Animate entry on component mount
     useEffect(() => {

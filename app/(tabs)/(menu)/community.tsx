@@ -1,5 +1,5 @@
 import { StyleSheet, ScrollView, Linking, Alert, Pressable } from 'react-native';
-import { Users, MessageCircle, Briefcase, UserPlus, Mail, Facebook, Youtube, ExternalLink } from 'lucide-react-native';
+import { Users, MessageCircle, Briefcase, UserPlus, Mail, Facebook, Youtube, ExternalLink, Twitter, Instagram, Linkedin } from 'lucide-react-native';
 
 import { Text, View } from '@/components/Themed';
 
@@ -20,11 +20,11 @@ interface JobPosition {
 
 const CommunityScreen = () => {
     const openFacebook = () => {
-        Linking.openURL('https://www.facebook.com/IALFMMasjid');
+        Linking.openURL('https://www.facebook.com/ialfmmasjid/');
     };
 
     const openYoutube = () => {
-        Linking.openURL('https://www.youtube.com/channel/UCPtx1gYmw-bwziiHEEzaHqQ');
+        Linking.openURL('https://youtube.com/@ialfmmasjid?si=I2Riex-EsQRPNm2F');
     };
 
     const openEmail = () => {
@@ -41,6 +41,18 @@ const CommunityScreen = () => {
 
     const openStartPage = () => {
         Linking.openURL('https://ialfm.org/start/');
+    };
+
+    const openTwitter = () => {
+        Linking.openURL('https://x.com/ialfm');
+    };
+
+    const openInstagram = () => {
+        Linking.openURL('https://www.instagram.com/ialfm_masjid/?utm_source=ig_web_button_share_sheet');
+    };
+
+    const shareViaEmail = () => {
+        Linking.openURL('mailto:?subject=Check out IALFM&body=I wanted to share the Islamic Association of Lewisville and Flower Mound with you. Visit: https://ialfm.org');
     };
 
     const requestWhatsAppInfo = () => {
@@ -75,20 +87,6 @@ const CommunityScreen = () => {
             description: 'Subscribe to our newsletter for regular updates about events, programs, and community news.',
             icon: Mail,
             action: openWebsite,
-        },
-        {
-            id: '4',
-            title: 'Facebook Page',
-            description: 'Follow @IALFMMasjid on Facebook for photos, updates, and community discussions.',
-            icon: Facebook,
-            action: openFacebook,
-        },
-        {
-            id: '5',
-            title: 'YouTube Channel',
-            description: 'Watch lectures, events, and educational content on our YouTube channel.',
-            icon: Youtube,
-            action: openYoutube,
         },
     ];
 
@@ -275,7 +273,42 @@ const CommunityScreen = () => {
                     <Text style={styles.guidelineItem}>• Follow safety protocols and guidelines</Text>
                     <Text style={styles.guidelineItem}>• Support community harmony and unity</Text>
                 </View>
-            </View >
+
+            </View>
+
+            <View style={styles.socialMediaSection}>
+                <Text style={styles.socialMediaTitle}>Follow Us on Social Media</Text>
+                <Text style={styles.socialMediaSubtitle}>
+                    Stay connected and up-to-date with our community
+                </Text>
+
+                <View style={styles.socialButtonsContainer}>
+                    <Pressable style={[styles.socialButton, { backgroundColor: '#1877F2' }]} onPress={openFacebook}>
+                        <Facebook size={24} color="white" />
+                        <Text style={styles.socialButtonText}>Facebook</Text>
+                    </Pressable>
+
+                    <Pressable style={[styles.socialButton, { backgroundColor: '#1DA1F2' }]} onPress={openTwitter}>
+                        <Twitter size={24} color="white" />
+                        <Text style={styles.socialButtonText}>Twitter</Text>
+                    </Pressable>
+
+                    <Pressable style={[styles.socialButton, { backgroundColor: '#E4405F' }]} onPress={openInstagram}>
+                        <Instagram size={24} color="white" />
+                        <Text style={styles.socialButtonText}>Instagram</Text>
+                    </Pressable>
+
+                    <Pressable style={[styles.socialButton, { backgroundColor: '#FF0000' }]} onPress={openYoutube}>
+                        <Youtube size={24} color="white" />
+                        <Text style={styles.socialButtonText}>YouTube</Text>
+                    </Pressable>
+
+                    <Pressable style={[styles.socialButton, { backgroundColor: '#34495E' }]} onPress={shareViaEmail}>
+                        <Mail size={24} color="white" />
+                        <Text style={styles.socialButtonText}>Share via Email</Text>
+                    </Pressable>
+                </View>
+            </View>
 
             <View style={styles.contactSection}>
                 <Text style={styles.contactTitle}>Get Involved</Text>
@@ -489,9 +522,11 @@ const styles = StyleSheet.create({
         color: '#333',
         marginBottom: 15,
         lineHeight: 22,
+        backgroundColor: '#e8f5e8',
     },
     volunteerList: {
         marginBottom: 15,
+        backgroundColor: '#e8f5e8',
     },
     volunteerItem: {
         fontSize: 16,
@@ -565,6 +600,7 @@ const styles = StyleSheet.create({
     },
     guidelinesList: {
         gap: 8,
+        backgroundColor: '#fff3e0',
     },
     guidelineItem: {
         fontSize: 16,
@@ -614,5 +650,52 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         marginLeft: 10,
+    },
+    socialMediaSection: {
+        backgroundColor: 'white',
+        margin: 15,
+        marginTop: 0,
+        padding: 20,
+        borderRadius: 10,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+    },
+    socialMediaTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#2E8B57',
+        marginBottom: 5,
+        textAlign: 'center',
+    },
+    socialMediaSubtitle: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    socialButtonsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        gap: 10,
+    },
+    socialButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        minWidth: '48%',
+        marginBottom: 10,
+    },
+    socialButtonText: {
+        fontSize: 14,
+        color: 'white',
+        fontWeight: '600',
+        marginLeft: 8,
     },
 });

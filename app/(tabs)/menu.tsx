@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, ScrollView, useColorScheme } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
-import { Users, Heart, Calendar, GraduationCap } from 'lucide-react-native';
+import { Users, Heart, Calendar, GraduationCap, Megaphone, CalendarDays } from 'lucide-react-native';
 import MenuItem from '@/components/MenuBox';
 import Colors from '@/constants/Colors';
 
@@ -13,6 +13,18 @@ const MenuScreen: React.FC = () => {
   const colors = Colors[colorScheme ?? 'light'];
 
   const menuItems = [
+    {
+      title: 'Announcements',
+      description: 'Latest community updates and news',
+      icon: <Megaphone size={32} color="#fff" />,
+      route: '/(tabs)/(menu)/announcements',
+    },
+    {
+      title: 'Calendar',
+      description: 'View events and important dates',
+      icon: <CalendarDays size={32} color="#fff" />,
+      route: '/(tabs)/(menu)/calender',
+    },
     {
       title: 'Community',
       description: 'Connect with our Islamic community',

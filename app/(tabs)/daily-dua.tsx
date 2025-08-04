@@ -4,76 +4,7 @@ import { Text, View } from '@/components/Themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RefreshCw } from 'lucide-react-native';
 import { Pressable } from 'react-native';
-
-interface Dua {
-    arabic: string;
-    transliteration: string;
-    translation: string;
-    source: string;
-}
-
-const DUAS: Dua[] = [
-    {
-        arabic: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
-        transliteration: "Allahumma a'inni 'ala dhikrika wa shukrika wa husni 'ibadatika",
-        translation: "O Allah, help me to remember You, to thank You, and to worship You in the best manner.",
-        source: "Sunan Abu Dawood"
-    },
-    {
-        arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
-        transliteration: "Rabbana atina fi'd-dunya hasanatan wa fi'l-akhirati hasanatan wa qina 'adhab an-nar",
-        translation: "Our Lord, give us good in this world and good in the hereafter, and save us from the punishment of the Fire.",
-        source: "Quran 2:201"
-    },
-    {
-        arabic: "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي وَوَسِّعْ لِي فِي دَارِي وَبَارِكْ لِي فِيمَا رَزَقْتَنِي",
-        transliteration: "Allahumma ighfir li dhanbi wa wassi' li fi dari wa barik li fima razaqtani",
-        translation: "O Allah, forgive my sins, expand my home for me, and bless what You have provided for me.",
-        source: "Sunan at-Tirmidhi"
-    },
-    {
-        arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي",
-        transliteration: "Rabbi ishrah li sadri wa yassir li amri",
-        translation: "My Lord, expand my chest and ease my affairs.",
-        source: "Quran 20:25-26"
-    },
-    {
-        arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى",
-        transliteration: "Allahumma inni as'aluka'l-huda wa't-tuqa wa'l-'afafa wa'l-ghina",
-        translation: "O Allah, I ask You for guidance, piety, chastity, and independence.",
-        source: "Sahih Muslim"
-    },
-    {
-        arabic: "رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا",
-        transliteration: "Rabbana la tu'akhidhna in nasina aw akhta'na",
-        translation: "Our Lord, do not impose blame upon us if we forget or make mistakes.",
-        source: "Quran 2:286"
-    },
-    {
-        arabic: "اللَّهُمَّ أَصْلِحْ لِي دِينِي الَّذِي هُوَ عِصْمَةُ أَمْرِي",
-        transliteration: "Allahumma aslih li dini'lladhi huwa 'ismatu amri",
-        translation: "O Allah, set right my religion which is the safeguard of my affairs.",
-        source: "Sahih Muslim"
-    },
-    {
-        arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ",
-        transliteration: "Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yunin",
-        translation: "Our Lord, grant us from among our wives and offspring comfort to our eyes.",
-        source: "Quran 25:74"
-    },
-    {
-        arabic: "اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا وَقِنَا عَذَابَ النَّارِ",
-        transliteration: "Allahumma barik lana fima razaqtana wa qina 'adhab an-nar",
-        translation: "O Allah, bless what You have provided for us and save us from the punishment of the Fire.",
-        source: "Sunan Abu Dawood"
-    },
-    {
-        arabic: "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ",
-        transliteration: "Rabbi awzi'ni an ashkura ni'mataka'llati an'amta 'alayya",
-        translation: "My Lord, enable me to be grateful for Your favor which You have bestowed upon me.",
-        source: "Quran 27:19"
-    }
-];
+import { Dua, Duas } from '@/constants/Duas';
 
 const STORAGE_KEYS = {
     DAILY_DUA: 'daily_dua',
@@ -110,8 +41,8 @@ const DailyDuaScreen = () => {
 
     // Function to get a random dua
     const getRandomDua = (): Dua => {
-        const randomIndex = Math.floor(Math.random() * DUAS.length);
-        return DUAS[randomIndex];
+        const randomIndex = Math.floor(Math.random() * Duas.length);
+        return Duas[randomIndex];
     };
 
     // Function to check if it's a new day (after 12 AM)
@@ -152,6 +83,7 @@ const DailyDuaScreen = () => {
 
     // Function to generate and save new dua
     const generateNewDua = async () => {
+        spinIcon();
         try {
             const newDua = getRandomDua();
             const currentTime = new Date().toISOString();
@@ -178,7 +110,6 @@ const DailyDuaScreen = () => {
 
     // Function to manually refresh dua (for testing or user preference)
     const refreshDua = () => {
-        spinIcon(); // Spin immediately when pressed
         Alert.alert(
             'Refresh Daily Dua',
             'Are you sure you want to get a new dua? This will replace your current daily dua.',
@@ -248,11 +179,6 @@ const DailyDuaScreen = () => {
                         <Text style={styles.arabicText}>{currentDua.arabic}</Text>
                     </View>
 
-                    <View style={styles.transliterationContainer}>
-                        <Text style={styles.sectionLabel}>Transliteration:</Text>
-                        <Text style={styles.transliterationText}>{currentDua.transliteration}</Text>
-                    </View>
-
                     <View style={styles.translationContainer}>
                         <Text style={styles.sectionLabel}>Translation:</Text>
                         <Text style={styles.translationText}>{currentDua.translation}</Text>
@@ -267,6 +193,8 @@ const DailyDuaScreen = () => {
         </ScrollView>
     );
 };
+
+export default DailyDuaScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -343,9 +271,6 @@ const styles = StyleSheet.create({
         color: '#333',
         fontWeight: '500',
     },
-    transliterationContainer: {
-        marginBottom: 20,
-    },
     translationContainer: {
         marginBottom: 20,
     },
@@ -361,12 +286,6 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         textTransform: 'uppercase',
         letterSpacing: 0.5,
-    },
-    transliterationText: {
-        fontSize: 16,
-        fontStyle: 'italic',
-        color: '#555',
-        lineHeight: 24,
     },
     translationText: {
         fontSize: 16,
@@ -405,5 +324,3 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
 });
-
-export default DailyDuaScreen;
