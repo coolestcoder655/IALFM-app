@@ -442,21 +442,6 @@ const PrayerTimesScreen = () => {
                 </Animated.View>
             )}
 
-            {currentPrayer && (
-                <View style={styles.currentPrayerSection}>
-                    <Text style={styles.currentPrayerLabel}>Current Prayer</Text>
-                    <Text style={styles.currentPrayerName}>{currentPrayer}</Text>
-                    <Text style={styles.currentPrayerTimeLeft}>
-                        ends in {formatTimeLeft(currentPrayerTimeLeft)}
-                    </Text>
-                </View>
-            )}
-
-            <View style={styles.nextPrayerSection}>
-                <Text style={styles.nextPrayerLabel}>Next Prayer</Text>
-                <Text style={styles.nextPrayerName}>{nextPrayer.next}</Text>
-            </View>
-
             <View style={styles.prayerTimesSection}>
                 <Text style={styles.sectionTitle}>Today's Prayer Times</Text>
                 {prayerTimes.map((prayer, index) => {

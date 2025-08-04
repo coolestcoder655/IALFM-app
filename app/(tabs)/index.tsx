@@ -1,11 +1,13 @@
 import { StyleSheet, ScrollView, Linking, Modal, Dimensions, Image } from 'react-native';
-import { MapPin, Phone, Mail, ExternalLink, X } from 'lucide-react-native';
+import { MapPin, Phone, Mail, ExternalLink, X, AlertTriangle, Info, Calendar, Clock } from 'lucide-react-native';
 import { Pressable } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'expo-router';
 import Carousel from 'react-native-reanimated-carousel';
 import { useSharedValue } from 'react-native-reanimated';
+import { getMostRecentAnnouncement, formatAnnouncementDate, getAnnouncementTypeColor, truncateText } from '@/utils/announcementsData';
+import SocialButtons from '@/components/SocialButtons';
 
 interface ProgramCarouselItem {
   id: string;
@@ -19,6 +21,26 @@ const HomeScreen = () => {
   const router = useRouter();
   const progress = useSharedValue<number>(0);
   const screenWidth = Dimensions.get('window').width;
+
+  // Get the most recent announcement dynamically
+  const mostRecentAnnouncement = useMemo(() => getMostRecentAnnouncement(), []);
+
+  // Helper function to get announcement type icon
+  const getAnnouncementIcon = (type: string) => {
+    switch (type) {
+      case 'urgent':
+        return <AlertTriangle size={16} color="#DC3545" />;
+      case 'general':
+        return <Info size={16} color="#2E8B57" />;
+      case 'event':
+        return <Calendar size={16} color="#4A90E2" />;
+      case 'reminder':
+        return <Clock size={16} color="#FF9800" />;
+      default:
+        return <Info size={16} color="#2E8B57" />;
+    }
+  };
+
   const carouselItems: ProgramCarouselItem[] = [
     {
       id: '1',
@@ -120,71 +142,44 @@ const HomeScreen = () => {
         />
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <Pressable style={styles.quickAction} onPress={() => router.navigate('/is-offline')}>
-          <Text style={styles.quickActionText}>Check Internet Status</Text>
-        </Pressable>
+      { /* Add Heading for Programs */}
 
 
-        <Pressable style={styles.quickAction} onPress={viewPrayerTimes}>
-          <ExternalLink size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>View Prayer Times</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={openWebsite}>
-          <ExternalLink size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>Visit Website</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={openMaps}>
-          <MapPin size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>Get Directions</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={callMasjid}>
-          <Phone size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>Call Masjid</Text>
-        </Pressable>
-
-        <Pressable style={styles.quickAction} onPress={emailMasjid}>
-          <Mail size={20} color="#2E8B57" />
-          <Text style={styles.quickActionText}>Email Us</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.servicesCard}>
-        <Text style={styles.sectionTitle}>Services & Facilities</Text>
-        <View style={styles.servicesList}>
-          <View style={styles.serviceRow}>
-            <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Daily Five Prayers</Text>
+      <View style={styles.announcementSection}>
+        <Text style={styles.sectionTitle}>Latest Announcement</Text>
+        {mostRecentAnnouncement ? (
+          <View style={styles.announcementCard}>
+            <View style={styles.announcementHeader}>
+              <Text style={styles.announcementTitle}>{mostRecentAnnouncement.title}</Text>
+              <View style={[
+                styles.announcementTypeBadge,
+                { backgroundColor: getAnnouncementTypeColor(mostRecentAnnouncement.type) }
+              ]}>
+                {getAnnouncementIcon(mostRecentAnnouncement.type)}
+              </View>
+            </View>
+            <Text style={styles.announcementDate}>
+              Posted: {formatAnnouncementDate(mostRecentAnnouncement.date)}
+              {mostRecentAnnouncement.isPinned && ' • Pinned'}
+            </Text>
+            <Text style={styles.announcementText}>
+              {truncateText(mostRecentAnnouncement.content, 150)}
+            </Text>
+            <Pressable style={styles.readMoreButton} onPress={() => router.navigate('/(tabs)/(menu)/announcements')}>
+              <Text style={styles.readMoreText}>Read More</Text>
+            </Pressable>
           </View>
-          <View style={styles.serviceRow}>
-            <MapPin size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Friday Jummah Prayers</Text>
+        ) : (
+          <View style={styles.announcementCard}>
+            <Text style={styles.announcementTitle}>No Recent Announcements</Text>
+            <Text style={styles.announcementText}>
+              Check back later for the latest updates from our community.
+            </Text>
+            <Pressable style={styles.readMoreButton} onPress={() => router.navigate('/(tabs)/(menu)/announcements')}>
+              <Text style={styles.readMoreText}>View All Announcements</Text>
+            </Pressable>
           </View>
-          <View style={styles.serviceRow}>
-            <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Quran School</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <ExternalLink size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Sunday School</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Youth Programs</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <Phone size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Educational Programs</Text>
-          </View>
-          <View style={styles.serviceRow}>
-            <Mail size={20} color="#2E8B57" style={styles.serviceIcon} />
-            <Text style={styles.serviceItemText}>Community Events</Text>
-          </View>
-        </View>
+        )}
       </View>
 
       <View style={styles.section}>
@@ -215,11 +210,9 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.socialMediaSection}>
-          <Text style={styles.socialMediaTitle}>Follow Us</Text>
-          <Text style={styles.socialMediaText}>
-            Stay updated with our latest announcements and events on Facebook @IALFMMasjid
-          </Text>
+          <Text style={styles.sectionTitle}>Follow Us</Text>
         </View>
+        <SocialButtons />
       </View>
 
       {/* Email Modal */}
@@ -660,5 +653,74 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     opacity: 0.9,
+  },
+  announcementSection: {
+    padding: 20,
+    backgroundColor: '#fff8f0',
+    margin: 15,
+    marginTop: 0,
+    borderRadius: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: '#f0e6d6',
+  },
+  announcementCard: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 15,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  announcementHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  announcementTypeBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  announcementTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2E8B57',
+    marginBottom: 5,
+    flex: 1,
+  },
+  announcementDate: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 10,
+    fontStyle: 'italic',
+  },
+  announcementText: {
+    fontSize: 14,
+    color: '#333',
+    lineHeight: 20,
+    marginBottom: 15,
+  },
+  readMoreButton: {
+    backgroundColor: '#2E8B57',
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  readMoreText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

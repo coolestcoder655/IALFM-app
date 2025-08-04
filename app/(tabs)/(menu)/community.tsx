@@ -2,6 +2,7 @@ import { StyleSheet, ScrollView, Linking, Alert, Pressable } from 'react-native'
 import { Users, MessageCircle, Briefcase, UserPlus, Mail, Facebook, Youtube, ExternalLink, Twitter, Instagram, Linkedin } from 'lucide-react-native';
 
 import { Text, View } from '@/components/Themed';
+import SocialButtons from '@/components/SocialButtons';
 
 interface CommunityFeature {
     id: string;
@@ -19,14 +20,6 @@ interface JobPosition {
 }
 
 const CommunityScreen = () => {
-    const openFacebook = () => {
-        Linking.openURL('https://www.facebook.com/ialfmmasjid/');
-    };
-
-    const openYoutube = () => {
-        Linking.openURL('https://youtube.com/@ialfmmasjid?si=I2Riex-EsQRPNm2F');
-    };
-
     const openEmail = () => {
         Linking.openURL('mailto:info@ialfm.org');
     };
@@ -43,17 +36,6 @@ const CommunityScreen = () => {
         Linking.openURL('https://ialfm.org/start/');
     };
 
-    const openTwitter = () => {
-        Linking.openURL('https://x.com/ialfm');
-    };
-
-    const openInstagram = () => {
-        Linking.openURL('https://www.instagram.com/ialfm_masjid/?utm_source=ig_web_button_share_sheet');
-    };
-
-    const shareViaEmail = () => {
-        Linking.openURL('mailto:?subject=Check out IALFM&body=I wanted to share the Islamic Association of Lewisville and Flower Mound with you. Visit: https://ialfm.org');
-    };
 
     const requestWhatsAppInfo = () => {
         Alert.alert(
@@ -275,57 +257,6 @@ const CommunityScreen = () => {
                 </View>
 
             </View>
-
-            <View style={styles.socialMediaSection}>
-                <Text style={styles.socialMediaTitle}>Follow Us on Social Media</Text>
-                <Text style={styles.socialMediaSubtitle}>
-                    Stay connected and up-to-date with our community
-                </Text>
-
-                <View style={styles.socialButtonsContainer}>
-                    <Pressable style={[styles.socialButton, { backgroundColor: '#1877F2' }]} onPress={openFacebook}>
-                        <Facebook size={24} color="white" />
-                        <Text style={styles.socialButtonText}>Facebook</Text>
-                    </Pressable>
-
-                    <Pressable style={[styles.socialButton, { backgroundColor: '#1DA1F2' }]} onPress={openTwitter}>
-                        <Twitter size={24} color="white" />
-                        <Text style={styles.socialButtonText}>Twitter</Text>
-                    </Pressable>
-
-                    <Pressable style={[styles.socialButton, { backgroundColor: '#E4405F' }]} onPress={openInstagram}>
-                        <Instagram size={24} color="white" />
-                        <Text style={styles.socialButtonText}>Instagram</Text>
-                    </Pressable>
-
-                    <Pressable style={[styles.socialButton, { backgroundColor: '#FF0000' }]} onPress={openYoutube}>
-                        <Youtube size={24} color="white" />
-                        <Text style={styles.socialButtonText}>YouTube</Text>
-                    </Pressable>
-
-                    <Pressable style={[styles.socialButton, { backgroundColor: '#34495E' }]} onPress={shareViaEmail}>
-                        <Mail size={24} color="white" />
-                        <Text style={styles.socialButtonText}>Share via Email</Text>
-                    </Pressable>
-                </View>
-            </View>
-
-            <View style={styles.contactSection}>
-                <Text style={styles.contactTitle}>Get Involved</Text>
-                <Text style={styles.contactText}>
-                    Ready to join our community or have questions? We'd love to hear from you:
-                </Text>
-                <Text style={styles.contactInfo}>
-                    📧 Email: info@ialfm.org{'\n'}
-                    🌐 Website: ialfm.org{'\n'}
-                    📱 Facebook: @IALFMMasjid{'\n'}
-                    🏢 Visit us at the masjid during community hours
-                </Text>
-                <Pressable style={styles.startButton} onPress={openStartPage}>
-                    <UserPlus size={20} color="white" />
-                    <Text style={styles.startButtonText}>Start Here - Connect with IALFM</Text>
-                </Pressable>
-            </View>
         </ScrollView >
     );
 };
@@ -467,12 +398,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 5,
+        backgroundColor: '#f8f9fa',
     },
     jobTitle: {
         fontSize: 16,
         fontWeight: 'bold',
         color: '#333',
         flex: 1,
+        backgroundColor: '#f8f9fa',
     },
     jobTypeBadge: {
         paddingHorizontal: 8,
@@ -676,26 +609,5 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         textAlign: 'center',
     },
-    socialButtonsContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        gap: 10,
-    },
-    socialButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        borderRadius: 8,
-        minWidth: '48%',
-        marginBottom: 10,
-    },
-    socialButtonText: {
-        fontSize: 14,
-        color: 'white',
-        fontWeight: '600',
-        marginLeft: 8,
-    },
+
 });

@@ -193,22 +193,6 @@ const ProgramsScreen = () => {
                 </View>
             </View>
 
-            <View style={styles.announcementSection}>
-                <Text style={styles.announcementTitle}>Stay Informed</Text>
-                <Text style={styles.announcementText}>
-                    Educational events and youth programs are advertised through:
-                </Text>
-                <Text style={styles.announcementList}>
-                    📧 Weekly Newsletter{'\n'}
-                    💬 Community WhatsApp Group{'\n'}
-                    📱 Facebook Page @IALFMMasjid
-                </Text>
-                <Pressable style={styles.websiteButton} onPress={openWebsite}>
-                    <ExternalLink size={20} color="#2E8B57" />
-                    <Text style={styles.websiteButtonText}>View Educational Programs</Text>
-                </Pressable>
-            </View>
-
             <View style={styles.contactSection}>
                 <Text style={styles.contactTitle}>Program Inquiries</Text>
                 <Text style={styles.contactText}>

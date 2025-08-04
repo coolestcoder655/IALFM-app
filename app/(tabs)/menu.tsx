@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, ScrollView, useColorScheme } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
-import { Users, Heart, Calendar, GraduationCap, Megaphone, CalendarDays } from 'lucide-react-native';
+import { Users, Heart, Calendar, GraduationCap, Megaphone, CalendarDays, Info } from 'lucide-react-native';
 import MenuItem from '@/components/MenuBox';
 import Colors from '@/constants/Colors';
 
@@ -13,6 +13,12 @@ const MenuScreen: React.FC = () => {
   const colors = Colors[colorScheme ?? 'light'];
 
   const menuItems = [
+    {
+      title: 'About Us',
+      description: 'Learn about IALFM, our Imam and Board of Directors',
+      icon: <Info size={32} color="#fff" />,
+      route: '/(tabs)/(menu)/about-us',
+    },
     {
       title: 'Announcements',
       description: 'Latest community updates and news',
@@ -36,12 +42,6 @@ const MenuScreen: React.FC = () => {
       description: 'Support our mosque and programs',
       icon: <Heart size={32} color="#fff" />,
       route: '/(tabs)/(menu)/donate',
-    },
-    {
-      title: 'Events',
-      description: 'Upcoming events and activities',
-      icon: <Calendar size={32} color="#fff" />,
-      route: '/(tabs)/(menu)/events',
     },
     {
       title: 'Programs',
