@@ -25,6 +25,11 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+// Force hide splash screen after maximum timeout to prevent infinite loading
+setTimeout(() => {
+  SplashScreen.hideAsync().catch(console.error);
+}, 10000); // 10 second maximum timeout
+
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -33,16 +38,28 @@ export default function RootLayout() {
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
-    if (error) throw error;
+    if (error) {
+      console.error('Font loading error:', error);
+      // Don't throw error, just log it and continue
+    }
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    if (loaded || error) { // Hide splash even if font loading fails
+      const hideSplash = async () => {
+        try {
+          await SplashScreen.hideAsync();
+        } catch (splashError) {
+          console.error('Error hiding splash screen:', splashError);
+        }
+      };
 
-  if (!loaded) {
+      // Add small delay to ensure app is ready
+      setTimeout(hideSplash, 100);
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
     return null;
   }
 

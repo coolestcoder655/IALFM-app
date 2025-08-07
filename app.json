@@ -1,60 +1,59 @@
 {
   "expo": {
-    "name": "IALFM",
+    "name": "IALFM App",
     "slug": "ialfm-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "ialfm",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2E8B57"
+      "backgroundColor": "#ffffff",
+      "hideAsync": false
+    },
+    "assetBundlePatterns": ["**/*"],
+    "platforms": ["ios", "android"],
+    "extra": {
+      "eas": {
+        "projectId": "ae0acd0a-7a55-4381-9d63-966566171c3b"
+      }
     },
     "ios": {
+      "bundleIdentifier": "IALFM.maariz1.com",
+      "builderNumber": "10",
       "supportsTablet": true,
-      "bundleIdentifier": "maariz.ialfm.app",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to calculate prayer times.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs access to your location to calculate prayer times.",
+        "NSCalendarsUsageDescription": "This app needs access to your calendar to save prayer times and Islamic events.",
+        "NSCalendarsWriteOnlyAccessUsageDescription": "This app needs to add prayer times and Islamic events to your calendar.",
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        },
+        "UIBackgroundModes": [],
+        "CFBundleAllowMixedLocalizations": true
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
-        "backgroundColor": "#2E8B57"
+        "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "package": "maariz.ialfm.app"
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "READ_CALENDAR",
+        "WRITE_CALENDAR"
+      ]
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/icon.png"
     },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    },
-    "description": "Official mobile app for the Islamic Association of Lewisville and Flower Mound (IALFM). Access prayer times, events, programs, and stay connected with our community.",
-    "keywords": [
-      "islam",
-      "mosque",
-      "masjid",
-      "prayer times",
-      "community",
-      "lewisville",
-      "flower mound",
-      "ialfm"
-    ],
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "ae0acd0a-7a55-4381-9d63-966566171c3b"
-      }
-    }
+    "plugins": ["expo-router"]
   }
 }

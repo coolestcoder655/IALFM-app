@@ -1,0 +1,81 @@
+IALFM is a comprehensive React Native mobile application built with 
+Expo that serves the Islamic Association of Lewisville and Flower Mound community in Texas.
+This app is designed to connect Muslims in the area with essential 
+Islamic services, prayer times, and community resources.
+
+
+Real-time prayer calculations based on user's location (Lewisville, TX area)
+Five daily prayers with accurate timings: Fajr, Dhuhr, Asr, Maghrib, and Isha
+Special Friday (Jummah) prayer scheduling at 1:30 PM with khutbah information
+Live current time display with second-by-second updates
+Prayer status indicators showing which prayer is currently active and which is next
+Visual animations and smooth transitions for prayer updates
+Offline handling with graceful fallbacks
+
+
+Extensive collection of 40+ Islamic supplications for daily activities
+Complete format including Arabic text, Latin transliteration, English translation, benefits, and authentic sources
+Covers supplications for:
+Daily routines (waking up, sleeping, eating, drinking)
+Travel and transportation
+Weather conditions (rain, wind)
+Personal protection and forgiveness
+Character improvement
+Special occasions and circumstances
+
+
+Interactive home screen with community announcements
+Image carousel showcasing mosque programs:
+Friday Jummah prayers
+Quran School for children
+Sunday School programs
+Pillars Academy (Islamic education)
+Employment opportunities
+Latest announcements with different priority levels (urgent, general, events, reminders)
+Social media integration for community engagement
+
+
+Multiple contact methods: Email, phone, website
+Smart email modal with options for Gmail or default email app
+Direct links to mosque website and Google Maps location
+Social media buttons for community platforms
+
+
+About Us section with mosque information
+Announcements board for community updates
+Islamic Calendar integration
+Community programs and events
+Donation capabilities
+Programs showcase for educational offerings
+
+
+Location-Based Services
+GPS integration using Expo Location for accurate prayer time calculations
+Internet connectivity monitoring with offline mode support
+Geolocation permissions management
+
+
+Smooth animations using React Native Reanimated
+Responsive design optimized for both iOS and Android
+Intuitive navigation with tab-based structure
+Visual feedback with loading states and error handling
+Accessibility features for inclusive designed
+
+
+React Native with Expo for cross-platform development
+TypeScript for type safety and better development experience
+Context API for state management (prayer times, location, internet status)
+Modular component structure for maintainability
+API integration for prayer time calculations
+
+
+Muslim residents of Lewisville and Flower Mound, Texas
+Community members seeking prayer times and Islamic resources
+Families looking for Islamic education programs
+Travelers needing local mosque information and prayer Times
+
+
+iOS (App Store ready with bundle identifier: IALFM.maariz1.com)
+Android (Google Play compatible)
+Cross-platform compatibility ensuring consistent experience
+This app serves as a digital bridge connecting the local Muslim community with their spiritual needs, educational resources, and social connections, making it easier for community members to stay engaged with their faith and mosque activities in the modern digital age.

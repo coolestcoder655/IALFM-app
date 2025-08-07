@@ -31,7 +31,7 @@ const PrayerTimesScreen = () => {
 
     // Check internet connection
     useEffect(() => {
-        if (!isConnected) {
+        if (isConnected === false) {
             redirectToOffline();
         }
     }, [isConnected]);
